@@ -233,11 +233,12 @@ public class snatchersMap : MonoBehaviour
         var commandArgs = Command.Split(new[] { ' ' }, 2);
         if (ModuleSolved)
         {
-            yield return false;
+            yield break;
         }
         if (commandArgs.Length < 1)
         {
             yield return "sendtochatmessage Invalid command!";
+            yield break;
         }
         switch (commandArgs[0].ToLowerInvariant())
         {
@@ -268,6 +269,7 @@ public class snatchersMap : MonoBehaviour
                 if (commandArgs.Length < 2)
                 {
                     yield return "sendtochatmessage Cycle speed not specified!";
+                    yield break;
                 }
                 else
                 {
@@ -275,11 +277,12 @@ public class snatchersMap : MonoBehaviour
                     if (int.TryParse(commandArgs[1], out tryParse))
                     {
                         TPCycleSpeed = tryParse;
-                        yield return $"Setting the cycle speed to {TPCycleSpeed}.";
+                        yield return $"Setting the cycle speed to {TPCycleSpeed} ticks.";
                     }
                     else
                     {
                         yield return "sendtochatmessage Invalid cycle speed!";
+                        yield break;
                     }
                 }
                 break;
@@ -302,14 +305,17 @@ public class snatchersMap : MonoBehaviour
                 if (!TPSubmissionMode)
                 {
                     yield return "sendtochatmessage Not in submission mode!";
+                    yield break;
                 }
                 if (commandArgs.Length < 2)
                 {
                     yield return "sendtochatmessage Death Wish not specified!";
+                    yield break;
                 }
                 else if (!deathWishes.Keys.ToList<string>().Contains(commandArgs[1]))
                 {
                     yield return "sendtochatmessage Invalid Death Wish name!";
+                    yield break;
                 }
                 else
                 {
@@ -319,7 +325,7 @@ public class snatchersMap : MonoBehaviour
                 break;
             default:
                 yield return "sendtochatmessage Invalid command!";
-                break;
+                yield break;
         }
     }
 
