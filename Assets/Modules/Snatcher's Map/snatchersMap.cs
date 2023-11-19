@@ -13,11 +13,10 @@ public class snatchersMap : MonoBehaviour
     [SerializeField] private KMAudio Audio;
 
     [SerializeField] private KMSelectable CycleButton;
-    [SerializeField] private List<KMSelectable> MapStamps;
     [SerializeField] private TextMesh InfoText;
     [SerializeField] private GameObject Map;
+    [SerializeField] private List<KMSelectable> MapStamps;
     
-
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved;
@@ -34,8 +33,8 @@ public class snatchersMap : MonoBehaviour
     // The Death Wish Database
     Dictionary<string, List<string>> deathWishes = new Dictionary<string, List<string>>()
     {
-        {"Beat the Heat", new List<string>() { "Turn off all the lava faucets", "It's much hotter than usual cool yourself off" ,"Don't get too hot!", "Don't cool down more than 2 times"} },
-        {"Snatcher's Hit List", new List<string>() { "Kill 5 Mafia without getting punched", "They've got you all figured out", "Kill 10 Alpine Pompous Crows without getting bullied", "Kill every type of enemy"} },
+        {"Beat the Heat", new List<string>() { "Turn off all the lava faucets", "It's much hotter than usual, cool yourself off!", "Don't get too hot!", "Don't cool down more than 2 times"} },
+        {"Snatcher's Hit List", new List<string>() { "Kill 5 Mafia without getting punched", "They've got you all figured out!", "Kill 10 Alpine Pompous Crows without getting bullied", "Kill every type of enemy"} },
         {"So You're Back From Outer Space", new List<string>() { "Reach the Time Piece", "Mafia saw spaceship!!", "Smash all the UFOs", "Reach the end in 80 seconds"} },
         {"Rift Collapse: Mafia of Cooks", new List<string>() { "Escape the Mafia of Cooks Time Rift", "The Time Rift has become unstable!", "Escape with 30 seconds to spare", "Collect every Rift Pon"} },
         {"Snatcher Coins in Mafia Town", new List<string>() { "Find a Snatcher Coin in Mafia Town", "Find 2 Snatcher Coins", "Find all 3 Snatcher Coins"} },
@@ -133,12 +132,32 @@ public class snatchersMap : MonoBehaviour
 
     void StampPressed(KMSelectable stamp)
     {
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, stamp.transform);
+        stamp.AddInteractionPunch();
+
         Stamp stampScript = stamp.gameObject.GetComponent<Stamp>();
-        Log(stampScript.StampName);
+        Log($"The \"{stampScript.StampName}\" stamp was pressed, checking submission...");
+        if (deathWishes[stampScript.StampName].Contains(randomDWInfo))
+        {
+            Log($"Selected Death Wish contains the chosen information, module solved!");
+            GetComponent<KMBombModule>().HandlePass();
+            Map.SetActive(false);
+            ModuleSolved = true;
+        }
+        else
+        {
+            Log($"Selected Death Wish does not contain the chosen information, strike!");
+            GetComponent<KMBombModule>().HandleStrike();
+            Start();
+        }
     }
 
     void Start()
     {
+        CycleButton.gameObject.SetActive(true);
+        InfoText.gameObject.SetActive(true);
+        Map.SetActive(false);
+
         int randomDWIdx = Rnd.Range(0, deathWishes.Keys.Count);
         randomDW = deathWishes.Keys.ElementAt<string>(randomDWIdx);
         int randomDWInfoIdx = Rnd.Range(0, deathWishes[randomDW].Count);
@@ -148,7 +167,7 @@ public class snatchersMap : MonoBehaviour
         modWordIdx = -1;
         CycleText();
 
-        Log($"Selected Death Wish is {randomDW}.");
+        Log($"Selected Death Wish is \"{randomDW}\".");
         Log($"Selected information about that Death Wish is \"{randomDWInfo}\".");
 
         lastTime = (int)Bomb.GetTime();
