@@ -54,7 +54,7 @@ public class snatchersMap : MonoBehaviour
         {"Speedrun Well", new List<string>() { "Clear 'Subcon Well' in 2:00 or less", "Clear in 1:40 or less", "Clear in 1:25 or less"} },
         {"Rift Collapse: Sleepy Subcon", new List<string>() { "Escape the Sleepy Subcon Time Rift", "The Time Rift has become unstable!", "Escape with 30 seconds to spare", "Collect every Rift Pon" } },
         {"Snatcher Coins in Subcon Forest", new List<string>() { "Find a Snatcher Coin in Subcon Forest", "Find 2 Snatcher Coins", "Find all 3 Snatcher Coins" } },
-        {"Boss Rush", new List<string>() { "Down with the Mafia (and Everyone Else!)", "No healing between fights", "You have 3 chances", "Don't miss nay chance to hit", "Win with One-Hit Hero equipped"} },
+        {"Boss Rush", new List<string>() { "Down with the Mafia (and Everyone Else!)", "No healing between fights", "You have 3 chances", "Don't miss any chance to hit", "Win with One-Hit Hero equipped"} },
         {"Quality Time With Snatcher", new List<string>() { "Survive Snatcher for 2 minutes", "This time, no blue potions!", "Survive for 4 minutes", "Survive for 6 minutes"} },
         {"Breaching the Contract", new List<string>() { "Defeat the Snatcher", "I'm even more handsome than usual!", "Don't let your health drop to 1HP", "Don't attack me! Only throw blue potions!"} },
         {"Community Rift: Twilight Travels", new List<string>() { "Complete the Time Rift", "Contributed by Eric 'Jak' Ridge", "Collect every Rift Pon", "Collect all the Storybook Pages" } },

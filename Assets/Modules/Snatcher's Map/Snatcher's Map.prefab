@@ -6402,6 +6402,8 @@ MonoBehaviour:
   Bomb: {fileID: 114656193316850848}
   Audio: {fileID: 114258851899790972}
   CycleButton: {fileID: 114719977681837718}
+  InfoText: {fileID: 102127858371009260}
+  Map: {fileID: 1516792511821764}
   MapStamps:
   - {fileID: 114548249670552680}
   - {fileID: 114435771307090778}
@@ -6441,8 +6443,6 @@ MonoBehaviour:
   - {fileID: 114350821888290974}
   - {fileID: 114603857719182460}
   - {fileID: 114455348933509552}
-  InfoText: {fileID: 102127858371009260}
-  Map: {fileID: 1516792511821764}
 --- !u!114 &114089451741293764
 MonoBehaviour:
   m_ObjectHideFlags: 1
