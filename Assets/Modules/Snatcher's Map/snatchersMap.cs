@@ -30,6 +30,9 @@ public class snatchersMap : MonoBehaviour
     bool overATick;
     int modWordIdx = -1;
 
+    int TPCycleSpeed = 1;
+    bool TPSubmissionMode;
+
     // The Death Wish Database
     Dictionary<string, List<string>> deathWishes = new Dictionary<string, List<string>>()
     {
@@ -128,6 +131,7 @@ public class snatchersMap : MonoBehaviour
         CycleButton.gameObject.SetActive(false);
         InfoText.gameObject.SetActive(false);
         Map.SetActive(true);
+        TPSubmissionMode = true;
     }
 
     void StampPressed(KMSelectable stamp)
@@ -157,6 +161,7 @@ public class snatchersMap : MonoBehaviour
         CycleButton.gameObject.SetActive(true);
         InfoText.gameObject.SetActive(true);
         Map.SetActive(false);
+        TPSubmissionMode = false;
 
         int randomDWIdx = Rnd.Range(0, deathWishes.Keys.Count);
         randomDW = deathWishes.Keys.ElementAt<string>(randomDWIdx);
@@ -220,16 +225,124 @@ public class snatchersMap : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} to do something.";
+    private readonly string TwitchHelpMessage = @"Use !{0} next To cycle the text once. !{0} cycle To cycle through all the words. !{0} cyclespeed # To set the cycling speed to # ticks. !{0} toggle To enter submission mode. !{0} submit Collect-A-Thon To submit the Collect-A-Thon deathwish. (use the names directly from the manual)";
 #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string Command)
     {
-        yield return null;
+        var commandArgs = Command.Split(new[] { ' ' }, 2);
+        if (ModuleSolved)
+        {
+            yield return false;
+        }
+        if (commandArgs.Length < 1)
+        {
+            yield return "sendtochatmessage Invalid command!";
+        }
+        switch (commandArgs[0].ToLowerInvariant())
+        {
+            case ("next"):
+                yield return null;
+                CycleButton.OnInteractEnded();
+                break;
+            case ("cycle"):
+                yield return null;
+                for (int i = 0; i < infoWordCount; i++)
+                {
+                    int TPtime = (int)Bomb.GetTime();
+                    int TPgoalTime = TPtime - TPCycleSpeed - 1;
+                    while (true)
+                    {
+                        TPtime = (int)Bomb.GetTime();
+                        yield return null;
+                        if (TPtime <= TPgoalTime)
+                        {
+                            CycleButton.OnInteractEnded();
+                            break;
+                        }
+                    }
+                }
+                yield return null;
+                break;
+            case ("cyclespeed"):
+                if (commandArgs.Length < 2)
+                {
+                    yield return "sendtochatmessage Cycle speed not specified!";
+                }
+                else
+                {
+                    int tryParse;
+                    if (int.TryParse(commandArgs[1], out tryParse))
+                    {
+                        TPCycleSpeed = tryParse;
+                        yield return $"Setting the cycle speed to {TPCycleSpeed}.";
+                    }
+                    else
+                    {
+                        yield return "sendtochatmessage Invalid cycle speed!";
+                    }
+                }
+                break;
+            case ("toggle"):
+                int TPtoggleTime = (int)Bomb.GetTime();
+                int TPtoggleGoalTime = TPtoggleTime - 1;
+                CycleButton.OnInteract();
+                while (true)
+                {
+                    TPtoggleTime = (int)Bomb.GetTime();
+                    yield return null;
+                    if (TPtoggleTime <= TPtoggleGoalTime)
+                    {
+                        CycleButton.OnInteractEnded();
+                        break;
+                    }
+                }
+                break;
+            case ("submit"):
+                if (!TPSubmissionMode)
+                {
+                    yield return "sendtochatmessage Not in submission mode!";
+                }
+                if (commandArgs.Length < 2)
+                {
+                    yield return "sendtochatmessage Death Wish not specified!";
+                }
+                else if (!deathWishes.Keys.ToList<string>().Contains(commandArgs[1]))
+                {
+                    yield return "sendtochatmessage Invalid Death Wish name!";
+                }
+                else
+                {
+                    yield return null;
+                    Map.transform.Find(commandArgs[1]).GetComponent<KMSelectable>().OnInteract();
+                }
+                break;
+            default:
+                yield return "sendtochatmessage Invalid command!";
+                break;
+        }
     }
 
     IEnumerator TwitchHandleForcedSolve()
     {
+        if (!TPSubmissionMode)
+        {
+            yield return null;
+            int TPtoggleTime = (int)Bomb.GetTime();
+            int TPtoggleGoalTime = TPtoggleTime - 1;
+            CycleButton.OnInteract();
+            while (true)
+            {
+                TPtoggleTime = (int)Bomb.GetTime();
+                yield return null;
+                if (TPtoggleTime <= TPtoggleGoalTime)
+                {
+                    CycleButton.OnInteractEnded();
+                    break;
+                }
+            }
+        }
         yield return null;
+        Map.transform.Find(randomDW).GetComponent<KMSelectable>().OnInteract();
     }
 }
