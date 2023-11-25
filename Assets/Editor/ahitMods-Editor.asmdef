@@ -1,0 +1,10 @@
+{
+  "name": "ahitMods-Editor",
+  "references": [
+    "ahitMods"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}

@@ -16,6 +16,7 @@ public class snatchersMap : MonoBehaviour
     [SerializeField] private TextMesh InfoText;
     [SerializeField] private GameObject Map;
     [SerializeField] private List<KMSelectable> MapStamps;
+    [SerializeField] private AudioClip FoolClip;
     
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -152,11 +153,21 @@ public class snatchersMap : MonoBehaviour
         {
             Log($"Selected Death Wish does not contain the chosen information, strike!");
             GetComponent<KMBombModule>().HandleStrike();
-            Start();
+            StartModule();
         }
     }
 
     void Start()
+    {
+        if (Bomb.GetModuleIDs().Contains("rhythmMaze"))
+        {
+            Log("Foooool!");
+            Audio.PlaySoundAtTransformWithRef(FoolClip.name, transform);
+        }
+        StartModule();
+    }
+
+    void StartModule()
     {
         CycleButton.gameObject.SetActive(true);
         InfoText.gameObject.SetActive(true);
@@ -175,7 +186,6 @@ public class snatchersMap : MonoBehaviour
         Log($"Selected Death Wish is \"{randomDW}\".");
         Log($"Selected information about that Death Wish is \"{randomDWInfo}\".");
 
-       
         lastTime = (int)Bomb.GetTime();
     }
 
