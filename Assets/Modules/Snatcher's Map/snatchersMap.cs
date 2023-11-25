@@ -114,7 +114,7 @@ public class snatchersMap : MonoBehaviour
     {
         modWordIdx++;
         modWordIdx %= infoWordCount;
-        InfoText.text = randomDWInfo.Split(' ')[modWordIdx];
+        InfoText.text = randomDWInfo.Split(' ')[modWordIdx].ToUpperInvariant();
         InfoText.fontSize = NonOverflowFontSize(InfoText.text.Length);
         if (modWordIdx == 0)
         {
@@ -175,6 +175,7 @@ public class snatchersMap : MonoBehaviour
         Log($"Selected Death Wish is \"{randomDW}\".");
         Log($"Selected information about that Death Wish is \"{randomDWInfo}\".");
 
+       
         lastTime = (int)Bomb.GetTime();
     }
 

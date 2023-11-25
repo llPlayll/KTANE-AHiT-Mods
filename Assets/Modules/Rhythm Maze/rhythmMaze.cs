@@ -12,6 +12,8 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private KMBombInfo Bomb;
     [SerializeField] private KMAudio Audio;
 
+    [SerializeField] private MeshRenderer ModuleRenderer;
+
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved;

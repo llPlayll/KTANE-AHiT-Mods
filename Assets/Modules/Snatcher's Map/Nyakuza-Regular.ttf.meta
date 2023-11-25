@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c06abebc80d40c74999c35a444668550
+guid: 782e2e5b4f1696e428a0ec685ada71b9
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,9 +8,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Nyakuza
+  fontName: Nyakuza metro
   fontNames:
-  - Nyakuza
+  - Nyakuza metro
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

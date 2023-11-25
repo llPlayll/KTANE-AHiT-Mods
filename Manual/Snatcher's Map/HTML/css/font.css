@@ -354,7 +354,7 @@
 
 @font-face {
     font-family: "Nyakuza";
-    src: local("Nyakuza-Regular"), url(../font/Nyakuza-Regular.ttf);
+    src: url(../font/Nyakuza-Regular.ttf);
 }
 
 @font-face {
