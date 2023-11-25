@@ -16,8 +16,10 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private KMSelectable StartButton;
     [SerializeField] private MeshRenderer StartButtonRenderer;
     [SerializeField] private List<Material> StartButtonMaterials;
+    [SerializeField] private List<Material> SidesMaterials;
 
     bool deathWish;
+    int currentSide = 0;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -38,7 +40,15 @@ public class rhythmMaze : MonoBehaviour
 
     void StartButtonPressed()
     {
-        Log("Starting Module");
+        StartButton.gameObject.SetActive(false);
+        if (deathWish)
+        {
+            ModuleRenderer.material = SidesMaterials[2];
+        }
+        else
+        {
+            ModuleRenderer.material = SidesMaterials[currentSide];
+        }
     }
 
     void Start()

@@ -380,7 +380,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: e9bf859081531344b9b6dba0097e070a, type: 2}
+  - {fileID: 2100000, guid: 7814061d6e7ab4a48bf549ff0a55f4b1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -482,6 +482,10 @@ MonoBehaviour:
   StartButtonMaterials:
   - {fileID: 2100000, guid: f56a7e998004892448cb235df1ae49cf, type: 2}
   - {fileID: 2100000, guid: e1bb7492eba290342ae96e136f83325c, type: 2}
+  SidesMaterials:
+  - {fileID: 2100000, guid: 1825c41390e17a245bf10575f3e89624, type: 2}
+  - {fileID: 2100000, guid: ceff27fb19220614baaef24d092db227, type: 2}
+  - {fileID: 2100000, guid: 7814061d6e7ab4a48bf549ff0a55f4b1, type: 2}
 --- !u!114 &114233326605509700
 MonoBehaviour:
   m_ObjectHideFlags: 1
