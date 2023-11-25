@@ -11,15 +11,21 @@ public class rhythmMaze : MonoBehaviour
 {
     [SerializeField] private KMBombInfo Bomb;
     [SerializeField] private KMAudio Audio;
+    [SerializeField] private AudioSource AudioSrc;
 
     [SerializeField] private MeshRenderer ModuleRenderer;
     [SerializeField] private KMSelectable StartButton;
     [SerializeField] private MeshRenderer StartButtonRenderer;
     [SerializeField] private List<Material> StartButtonMaterials;
     [SerializeField] private List<Material> SidesMaterials;
+    [SerializeField] private List<AudioClip> Songs;
+    [SerializeField] private KMSelectable MuteButton;
 
     bool deathWish;
     int currentSide = 0;
+    float waitTime;
+
+    bool muted;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -36,6 +42,7 @@ public class rhythmMaze : MonoBehaviour
 
         //button.OnInteract += delegate () { buttonPress(); return false; };
         StartButton.OnInteract += delegate () { StartButtonPressed(); return false; };
+        MuteButton.OnInteract += delegate () { MuteSound(); return false; };
     }
 
     void StartButtonPressed()
@@ -44,11 +51,23 @@ public class rhythmMaze : MonoBehaviour
         if (deathWish)
         {
             ModuleRenderer.material = SidesMaterials[2];
+            AudioSrc.clip = Songs[1];
+            waitTime = 2f / 3f;
         }
         else
         {
             ModuleRenderer.material = SidesMaterials[currentSide];
+            AudioSrc.clip = Songs[0];
+            waitTime = 1.5f;
         }
+        AudioSrc.Play();
+        StartCoroutine("SidesCycle");
+    }
+
+    void MuteSound()
+    {
+        muted = !muted;
+        AudioSrc.mute = muted;
     }
 
     void Start()
@@ -69,6 +88,20 @@ public class rhythmMaze : MonoBehaviour
     void Log(string arg)
     {
         Debug.Log($"[Rhythm Maze #{ModuleId}] {arg}");
+    }
+
+    IEnumerator SidesCycle()
+    {
+        while (!ModuleSolved)
+        {
+            yield return new WaitForSeconds(waitTime);
+            currentSide++;
+            currentSide %= 2;
+            if (!deathWish)
+            {
+                ModuleRenderer.material = SidesMaterials[currentSide];
+            }
+        }
     }
 
 #pragma warning disable 414
