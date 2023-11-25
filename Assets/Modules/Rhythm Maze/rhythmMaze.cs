@@ -13,6 +13,11 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private KMAudio Audio;
 
     [SerializeField] private MeshRenderer ModuleRenderer;
+    [SerializeField] private KMSelectable StartButton;
+    [SerializeField] private MeshRenderer StartButtonRenderer;
+    [SerializeField] private List<Material> StartButtonMaterials;
+
+    bool deathWish;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -28,11 +33,27 @@ public class rhythmMaze : MonoBehaviour
         */
 
         //button.OnInteract += delegate () { buttonPress(); return false; };
+        StartButton.OnInteract += delegate () { StartButtonPressed(); return false; };
+    }
+
+    void StartButtonPressed()
+    {
+        Log("Starting Module");
     }
 
     void Start()
     {
-
+        if (Bomb.GetModuleIDs().Contains("snatchersMap"))
+        {
+            StartButtonRenderer.material = StartButtonMaterials[1];
+            deathWish = true;
+            Log("Looks like someone has a Death Wish...");
+            Log("This bomb has a Snatcher's Map, the Time Rift has become unstable!");
+        }
+        else
+        {
+            StartButtonRenderer.material = StartButtonMaterials[0];
+        }
     }
 
     void Log(string arg)
