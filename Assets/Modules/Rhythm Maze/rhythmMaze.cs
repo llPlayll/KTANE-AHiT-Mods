@@ -47,7 +47,6 @@ public class rhythmMaze : MonoBehaviour
     bool deathWish;
     int currentSide = 0;
     float waitTime;
-
     bool muted;
 
     static int ModuleIdCounter = 1;
@@ -160,9 +159,9 @@ public class rhythmMaze : MonoBehaviour
 
     void Generate()
     {
-        markings1Row = Rnd.Range(0, 4) + (deathWish ? 2 : 0);
+        markings1Row = Rnd.Range(0, 4);
         markings1Column = Rnd.Range(0, 4) + (deathWish ? 2 : 0);
-        markings2Row = Rnd.Range(0, 4) + (deathWish ? 2 : 0);
+        markings2Row = Rnd.Range(0, 4);
         markings2Column = Rnd.Range(0, 4) + (deathWish ? 2 : 0);
 
         List<string> sideLog;

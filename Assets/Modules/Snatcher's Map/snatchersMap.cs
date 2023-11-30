@@ -17,10 +17,6 @@ public class snatchersMap : MonoBehaviour
     [SerializeField] private GameObject Map;
     [SerializeField] private List<KMSelectable> MapStamps;
     [SerializeField] private AudioClip FoolClip;
-    
-    static int ModuleIdCounter = 1;
-    int ModuleId;
-    private bool ModuleSolved;
 
     string randomDW;
     string randomDWInfo;
@@ -33,6 +29,10 @@ public class snatchersMap : MonoBehaviour
 
     int TPCycleSpeed = 1;
     bool TPSubmissionMode;
+
+    static int ModuleIdCounter = 1;
+    int ModuleId;
+    private bool ModuleSolved;
 
     // The Death Wish Database
     Dictionary<string, List<string>> deathWishes = new Dictionary<string, List<string>>()
