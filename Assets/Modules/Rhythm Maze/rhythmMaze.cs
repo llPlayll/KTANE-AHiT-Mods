@@ -24,25 +24,30 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private List<KMSelectable> ArrowButtons;
     [SerializeField] private List<GameObject> TopLeftMarkings;
     [SerializeField] private List<GameObject> TopRightMarkings;
-
+    
     int[,] markings1 = { {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 1, 0, 0},
                          {0, 1, 1, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0},
                          {1, 0, 0, 1, 1, 0} };
-
     int[,] markings2 = { {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 1, 0, 0},
                          {1, 0, 1, 0, 1, 0},
                          {0, 0, 0, 0, 0, 0},
                          {0, 0, 1, 0, 0, 0},
                          {0, 0, 0, 1, 1, 1} };
+    string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     int markings1Row, markings1Column;
     int markings2Row, markings2Column;
     int[,] genMarkings1 = new int[3, 3];
     int[,] genMarkings2 = new int[3, 3];
+    int[] serialNumValues = new int[6];
+    List<int> basePonRows = new List<int>();
+    List<int> basePonColumns = new List<int>();
+    List<int> ponLocations = new List<int>();
+    int baseGoalRow, baseGoalColumn, goalLocation;
 
     bool deathWish;
     int currentSide = 0;
@@ -100,9 +105,11 @@ public class rhythmMaze : MonoBehaviour
             marking.SetActive(false);
         }
         MazeParent.SetActive(true);
-
         GetComponentInParent<KMSelectable>().UpdateChildrenProperly();
-        Generate();
+
+        GenerateMarkings();
+        GeneratePonsAndGoal();
+
         AudioSrc.Play();
         StartCoroutine("SidesCycle");
         SetMarkings();
@@ -157,7 +164,7 @@ public class rhythmMaze : MonoBehaviour
     }
         
 
-    void Generate()
+    void GenerateMarkings()
     {
         markings1Row = Rnd.Range(0, 4);
         markings1Column = Rnd.Range(0, 4) + (deathWish ? 2 : 0);
@@ -184,6 +191,77 @@ public class rhythmMaze : MonoBehaviour
                 genMarkings2[i, !deathWish ? j : 3 - j - 1] = markings2[markings2Row + i, markings2Column + (deathWish ? -j : j)];
             }
         }
+    }
+
+    void GeneratePonsAndGoal()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            string character = Bomb.GetSerialNumber()[i].ToString();
+            if (character == "0")
+            {
+                serialNumValues[i] = 1;
+            }
+            else if (alphabet.Contains(character))
+            {
+                serialNumValues[i] = alphabet.IndexOf(character) % 6 + 1;
+            }
+            else
+            {
+                serialNumValues[i] = (int.Parse(character) - 1) % 6 + 1;
+            }
+        }
+
+        if (!deathWish)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                basePonRows.Add(serialNumValues[i]);
+                basePonColumns.Add(serialNumValues[i + 1]);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                basePonRows.Add(serialNumValues[2 * i]);
+                basePonColumns.Add(serialNumValues[2 * i + 1]);
+            }
+        }
+
+        string ponLog = "";
+        for (int i = 0; i < basePonRows.Count; i++)
+        {
+            int addLocation = AvoidDuplicates(basePonRows[i] * 10 + basePonColumns[i], ponLocations); ;
+            ponLocations.Add(addLocation);
+            ponLog += $"({ponLocations[i].ToString()[0]}, {ponLocations[i].ToString()[1]})" + (i == basePonRows.Count - 1 ? "." : ", ");
+        }
+        Log($"The pons are at coordinates: {ponLog}");
+
+        baseGoalRow = serialNumValues[0];
+        baseGoalColumn = serialNumValues[5];
+        goalLocation = AvoidDuplicates(baseGoalRow * 10 + baseGoalColumn, ponLocations);
+        Log($"The goal is at ({goalLocation.ToString()[0]}, {goalLocation.ToString()[1]})");
+    }
+
+    int AvoidDuplicates(int location, List<int> locationsList)
+    {
+        while (locationsList.Contains(location))
+        {
+            if (location % 10 == 6)
+            {
+                location = ((int)(location / 10) + 1) * 10;
+                if (location == 70)
+                {
+                    location = 11;
+                }
+            }
+            else
+            {
+                location += 1;
+            }
+        }
+        return location;
     }
 
     void SetMarkings()
