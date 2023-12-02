@@ -24,6 +24,8 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private List<KMSelectable> ArrowButtons;
     [SerializeField] private List<GameObject> TopLeftMarkings;
     [SerializeField] private List<GameObject> TopRightMarkings;
+    [SerializeField] private GameObject PlayerObject;
+    [SerializeField] private GameObject CellIndicatorsParent;
     
     int[,] markings1 = { {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0},
@@ -38,6 +40,20 @@ public class rhythmMaze : MonoBehaviour
                          {0, 0, 1, 0, 0, 0},
                          {0, 0, 0, 1, 1, 1} };
     string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string[,] walls1 = { {"RD", "UDL", "RD", "URL", "DL", "RL", },
+                         {"RD", "UR", "URL", "RDL", "UL", "L", },
+                         {"RDL", "UL", "RL", "DL", "RDL", "UD", },
+                         {"UD", "URDL", "RD", "D", "D", "", },
+                         {"UR", "URD", "R", "R", "DL", "URL", },
+                         {"RDL", "RD", "", "DL", "D", "URDL", } };
+    string[,] walls2 = { {"URDL", "RDL", "UDL", "URD", "UL", "URL", },
+                         {"RL", "URL", "", "", "DL", "UR", },
+                         {"UD", "URD", "URDL", "", "DL", "RDL", },
+                         {"R", "R", "UD", "L", "URL", "DL", },
+                         {"UR", "UD", "L", "", "RDL", "", },
+                         {"RD", "R", "RDL", "", "URD", "RDL", } };
+
+
 
     int markings1Row, markings1Column;
     int markings2Row, markings2Column;
@@ -53,6 +69,8 @@ public class rhythmMaze : MonoBehaviour
     int currentSide = 0;
     float waitTime;
     bool muted;
+    int playerRow, playerCol;
+    string playerColLetter;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -109,6 +127,10 @@ public class rhythmMaze : MonoBehaviour
 
         GenerateMarkings();
         GeneratePonsAndGoal();
+        playerRow = Rnd.Range(1, 7);
+        playerCol = Rnd.Range(1, 7);
+        Log($"Starting position is ({playerRow}, {playerCol + 1}).");
+        SetPlayerPos();
 
         AudioSrc.Play();
         StartCoroutine("SidesCycle");
@@ -133,6 +155,56 @@ public class rhythmMaze : MonoBehaviour
             }
         }
         Log(dirPressed);
+
+        switch (dirPressed)
+        {
+            case "U":
+                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("U") || playerRow == 1)
+                {
+                    GetComponent<KMBombModule>().HandleStrike();
+                }
+                else
+                {
+                    playerRow -= 1;
+                    SetPlayerPos();
+                }
+                break;
+            case "R":
+                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("R") || playerCol == 6)
+                {
+                    GetComponent<KMBombModule>().HandleStrike();
+                }
+                else
+                {
+                    playerCol += 1;
+                    SetPlayerPos();
+                }
+                break;
+            case "D":
+                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("D") || playerRow == 6)
+                {
+                    GetComponent<KMBombModule>().HandleStrike();
+                }
+                else
+                {
+                    playerRow += 1;
+                    SetPlayerPos();
+                }
+                break;
+            case "L":
+                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("L") || playerCol == 1)
+                {
+                    GetComponent<KMBombModule>().HandleStrike();
+                }
+                else
+                {
+                    playerCol -= 1;
+                    SetPlayerPos();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     void Start()
@@ -162,7 +234,6 @@ public class rhythmMaze : MonoBehaviour
         }
         return newGrid;
     }
-        
 
     void GenerateMarkings()
     {
@@ -236,12 +307,12 @@ public class rhythmMaze : MonoBehaviour
             ponLocations.Add(addLocation);
             ponLog += $"({ponLocations[i].ToString()[0]}, {ponLocations[i].ToString()[1]})" + (i == basePonRows.Count - 1 ? "." : ", ");
         }
-        Log($"The pons are at coordinates: {ponLog}");
+        Log($"The pons are at coordinates: {ponLog}.");
 
         baseGoalRow = serialNumValues[0];
         baseGoalColumn = serialNumValues[5];
         goalLocation = AvoidDuplicates(baseGoalRow * 10 + baseGoalColumn, ponLocations);
-        Log($"The goal is at ({goalLocation.ToString()[0]}, {goalLocation.ToString()[1]})");
+        Log($"The goal is at ({goalLocation.ToString()[0]}, {goalLocation.ToString()[1]}).");
     }
 
     int AvoidDuplicates(int location, List<int> locationsList)
@@ -280,6 +351,12 @@ public class rhythmMaze : MonoBehaviour
                 }
             }
         }
+    }
+
+    void SetPlayerPos()
+    {
+        playerColLetter = "ABCDEF"[playerCol - 1].ToString();
+        PlayerObject.transform.position = CellIndicatorsParent.transform.Find(playerColLetter + playerRow.ToString()).transform.position;
     }
 
     void Log(string arg)
