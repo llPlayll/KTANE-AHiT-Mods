@@ -40,18 +40,18 @@ public class rhythmMaze : MonoBehaviour
                          {0, 0, 1, 0, 0, 0},
                          {0, 0, 0, 1, 1, 1} };
     string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    string[,] walls1 = { {"RD", "UDL", "RD", "URL", "DL", "RL", },
-                         {"RD", "UR", "URL", "RDL", "UL", "L", },
-                         {"RDL", "UL", "RL", "DL", "RDL", "UD", },
-                         {"UD", "URDL", "RD", "D", "D", "", },
-                         {"UR", "URD", "R", "R", "DL", "URL", },
-                         {"RDL", "RD", "", "DL", "D", "URDL", } };
-    string[,] walls2 = { {"URDL", "RDL", "UDL", "URD", "UL", "URL", },
-                         {"RL", "URL", "", "", "DL", "UR", },
-                         {"UD", "URD", "URDL", "", "DL", "RDL", },
-                         {"R", "R", "UD", "L", "URL", "DL", },
-                         {"UR", "UD", "L", "", "RDL", "", },
-                         {"RD", "R", "RDL", "", "URD", "RDL", } };
+    string[,] walls1 = { { "DL", "UD", "R", "LR", "UDL", "UR" },
+                         { "UDL", "UR", "RL", "RL", "URL", "L" } ,
+                         { "UD", "R", "RDL", "DL", "RD", "RDL" } ,
+                         { "UDL", "RD", "UDL", "UD", "UD", "UD" } ,
+                         { "U", "URD", "URL", "URL", "URDL", "URL" } ,
+                         { "RDL", "UL", "RD", "RL", "UDL", "D" } };
+    string[,] walls2 = { { "RDL", "URDL", "DL", "URD", "URL", "LDR" },
+                         { "URL", "URL", "UDL", "UR", "DL", "UR" } ,
+                         { "D", "RD", "URDL", "RL", "URDL", "LD" } ,
+                         { "URDL", "URL", "URDL", "RDL", "URL", "URDL" } ,
+                         { "UR", "RDL", "UL", "UR", "RDL", "URL" } ,
+                         { "RDL", "URL", "RDL", "L", "URD", "DL" } };
 
 
 
@@ -230,6 +230,33 @@ public class rhythmMaze : MonoBehaviour
             for (int j = 0; j < 6; j++)
             {
                 newGrid[i, 6 - j - 1] = grid[i, j];
+            }
+        }
+        return newGrid;
+    }
+
+    string[,] ShiftGridHoriz(string[,] grid, int offset, bool right)
+    {
+        string[,] newGrid = new string[6, 6];
+        int shiftAmount = right ? 6 - offset : offset;
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                newGrid[i, j] = grid[i, (j + shiftAmount) % 6];
+            }
+        }
+        return newGrid;
+    }
+
+    string[,] ShiftGridUp(string[,] grid, int offset)
+    {
+        string[,] newGrid = new string[6, 6];
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                newGrid[i, j] = grid[(i - offset) % 6, j];
             }
         }
         return newGrid;
