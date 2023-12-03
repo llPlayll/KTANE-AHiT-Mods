@@ -41,17 +41,17 @@ public class rhythmMaze : MonoBehaviour
                          {0, 0, 0, 1, 1, 1} };
     string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     string[,] walls1 = { { "DL", "UD", "R", "LR", "UDL", "UR" },
-                         { "UDL", "UR", "RL", "RL", "URL", "L" } ,
-                         { "UD", "R", "RDL", "DL", "RD", "RDL" } ,
-                         { "UDL", "RD", "UDL", "UD", "UD", "UD" } ,
-                         { "U", "URD", "URL", "URL", "URDL", "URL" } ,
-                         { "RDL", "UL", "RD", "RL", "UDL", "D" } };
-    string[,] walls2 = { { "RDL", "URDL", "DL", "URD", "URL", "LDR" },
+                         { "UDL", "UR", "RL", "RL", "URL", "RL" } ,
+                         { "UD", "R", "RDL", "DL", "RD", "DL" } ,
+                         { "UDL", "RD", "UDL", "UD", "UD", "UDR" } ,
+                         { "U", "URD", "URL", "URL", "URDL", "UL" } ,
+                         { "RL", "UDL", "R", "RL", "UDL", "DR" } };
+    string[,] walls2 = { { "RDL", "RDL", "DL", "URD", "URL", "LDR" },
                          { "URL", "URL", "UDL", "UR", "DL", "UR" } ,
-                         { "D", "RD", "URDL", "RL", "URDL", "LD" } ,
-                         { "URDL", "URL", "URDL", "RDL", "URL", "URDL" } ,
-                         { "UR", "RDL", "UL", "UR", "RDL", "URL" } ,
-                         { "RDL", "URL", "RDL", "L", "URD", "DL" } };
+                         { "D", "RD", "RDL", "RL", "URL", "LD" } ,
+                         { "URD", "URL", "UDL", "RDL", "URL", "UL" } ,
+                         { "UR", "RDL", "UL", "UR", "RDL", "UL" } ,
+                         { "RL", "URL", "RL", "DL", "URD", "RL" } };
 
 
 
@@ -259,7 +259,7 @@ public class rhythmMaze : MonoBehaviour
         {
             for (int j = 0; j < 6; j++)
             {
-                newGrid[i, j] = grid[i, (j + shiftAmount + 1) % 6];
+                newGrid[i, j] = grid[i, (j + shiftAmount) % 6];
             }
         }
         return newGrid;
@@ -272,7 +272,7 @@ public class rhythmMaze : MonoBehaviour
         {
             for (int j = 0; j < 6; j++)
             {
-                newGrid[i, j] = grid[(0 <= (i - offset - 1) & (i - offset - 1) <= 5) ? (i - offset - 1) : (i - offset - 1) + 6, j];
+                newGrid[i, j] = grid[(i + offset) % 6, j];
             }
         }
         return newGrid;
@@ -297,11 +297,10 @@ public class rhythmMaze : MonoBehaviour
         }
         Log($"Marking positions of the {position} corners are ({markings1Row + 1}, {markings1Column + 1}) for {sideLog[0]}, and ({markings2Row + 1}, {markings2Column + 1}) for {sideLog[1]}.");
 
-        //walls1 = ShiftGridUp(ShiftGridHoriz(walls1, markings1Column, deathWish), markings1Row);
         walls1 = ShiftGridHoriz(walls1, markings1Column, deathWish);
         walls1 = ShiftGridUp(walls1, markings1Row);
         walls2 = ShiftGridHoriz(walls2, markings2Column, deathWish);
-        //walls2 = ShiftGridUp(ShiftGridHoriz(walls2, markings2Column, deathWish), markings2Row);
+        walls2 = ShiftGridUp(walls2, markings2Row);
 
         for (int i = 0; i < 3; i++)
         {
