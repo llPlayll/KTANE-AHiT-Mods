@@ -40,15 +40,15 @@ public class rhythmMaze : MonoBehaviour
                          {0, 0, 1, 0, 0, 0},
                          {0, 0, 0, 1, 1, 1} };
     string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    string[,] walls1 = { { "DL", "UD", "R", "LR", "UDL", "UR" },
+    string[,] walls1 = { { "DL", "UD", "R", "LR", "UDL", "UR" } ,
                          { "UDL", "UR", "RL", "RL", "URL", "RL" } ,
                          { "UD", "R", "RDL", "DL", "RD", "DL" } ,
                          { "UDL", "RD", "UDL", "UD", "UD", "UDR" } ,
                          { "U", "URD", "URL", "URL", "URDL", "UL" } ,
                          { "RL", "UDL", "R", "RL", "UDL", "DR" } };
-    string[,] walls2 = { { "RDL", "RDL", "DL", "URD", "URL", "LDR" },
+    string[,] walls2 = { { "RDL", "RDL", "DL", "URD", "URL", "LDR" } ,
                          { "URL", "URL", "UDL", "UR", "DL", "UR" } ,
-                         { "D", "RD", "RDL", "RL", "URL", "LD" } ,
+                         { "D", "RD", "URDL", "RL", "URL", "LD" } ,
                          { "URD", "URL", "UDL", "RDL", "URL", "UL" } ,
                          { "UR", "RDL", "UL", "UR", "RDL", "UL" } ,
                          { "RL", "URL", "RL", "DL", "URD", "RL" } };
