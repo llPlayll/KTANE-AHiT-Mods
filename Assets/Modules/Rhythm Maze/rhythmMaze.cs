@@ -159,46 +159,62 @@ public class rhythmMaze : MonoBehaviour
         switch (dirPressed)
         {
             case "U":
-                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("U") || playerRow == 1)
+                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("U"))
                 {
                     GetComponent<KMBombModule>().HandleStrike();
                 }
                 else
                 {
                     playerRow -= 1;
+                    if (playerRow == 0)
+                    {
+                        playerRow = 6;
+                    }
                     SetPlayerPos();
                 }
                 break;
             case "R":
-                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("R") || playerCol == 6)
+                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("R"))
                 {
                     GetComponent<KMBombModule>().HandleStrike();
                 }
                 else
                 {
                     playerCol += 1;
+                    if (playerCol == 7)
+                    {
+                        playerCol = 1;
+                    }
                     SetPlayerPos();
                 }
                 break;
             case "D":
-                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("D") || playerRow == 6)
+                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("D"))
                 {
                     GetComponent<KMBombModule>().HandleStrike();
                 }
                 else
                 {
                     playerRow += 1;
+                    if (playerRow == 7)
+                    {
+                        playerRow = 1;
+                    }
                     SetPlayerPos();
                 }
                 break;
             case "L":
-                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("L") || playerCol == 1)
+                if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("L"))
                 {
                     GetComponent<KMBombModule>().HandleStrike();
                 }
                 else
                 {
                     playerCol -= 1;
+                    if (playerCol == 0)
+                    {
+                        playerCol = 6;
+                    }
                     SetPlayerPos();
                 }
                 break;
@@ -243,7 +259,7 @@ public class rhythmMaze : MonoBehaviour
         {
             for (int j = 0; j < 6; j++)
             {
-                newGrid[i, j] = grid[i, (j + shiftAmount) % 6];
+                newGrid[i, j] = grid[i, (j + shiftAmount + 1) % 6];
             }
         }
         return newGrid;
@@ -256,7 +272,7 @@ public class rhythmMaze : MonoBehaviour
         {
             for (int j = 0; j < 6; j++)
             {
-                newGrid[i, j] = grid[(i - offset) % 6, j];
+                newGrid[i, j] = grid[(0 <= (i - offset - 1) & (i - offset - 1) <= 5) ? (i - offset - 1) : (i - offset - 1) + 6, j];
             }
         }
         return newGrid;
@@ -280,6 +296,12 @@ public class rhythmMaze : MonoBehaviour
             sideLog = new List<string> { "Side 1", "Side 2" };
         }
         Log($"Marking positions of the {position} corners are ({markings1Row + 1}, {markings1Column + 1}) for {sideLog[0]}, and ({markings2Row + 1}, {markings2Column + 1}) for {sideLog[1]}.");
+
+        //walls1 = ShiftGridUp(ShiftGridHoriz(walls1, markings1Column, deathWish), markings1Row);
+        walls1 = ShiftGridHoriz(walls1, markings1Column, deathWish);
+        walls1 = ShiftGridUp(walls1, markings1Row);
+        walls2 = ShiftGridHoriz(walls2, markings2Column, deathWish);
+        //walls2 = ShiftGridUp(ShiftGridHoriz(walls2, markings2Column, deathWish), markings2Row);
 
         for (int i = 0; i < 3; i++)
         {
