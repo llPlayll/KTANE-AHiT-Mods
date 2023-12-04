@@ -321,7 +321,7 @@ public class rhythmMaze : MonoBehaviour
     string[,] ShiftGridHoriz(string[,] grid, int offset, bool right)
     {
         string[,] newGrid = new string[6, 6];
-        int shiftAmount = right ? 5 - offset : offset;
+        int shiftAmount = right ? offset + 1 : offset;
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 6; j++)
