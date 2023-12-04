@@ -6267,6 +6267,13 @@ MonoBehaviour:
   - {fileID: 1985631094701654}
   PlayerObject: {fileID: 1958920426611634}
   CellIndicatorsParent: {fileID: 1090470127699582}
+  PonCollectionClips:
+  - {fileID: 8300000, guid: 12ea440772210d949ab55dc0e6509b4c, type: 3}
+  - {fileID: 8300000, guid: 1f8e66801ae459b49befb48574f2ae52, type: 3}
+  - {fileID: 8300000, guid: 8b09977d1673d64468730905ccb00aef, type: 3}
+  - {fileID: 8300000, guid: 491f89858da0fc748a31b56c8907ae46, type: 3}
+  - {fileID: 8300000, guid: 4001fa53738173a40808a4833e40ba6b, type: 3}
+  HmmmClip: {fileID: 8300000, guid: b95adec97e4f4af498a905fd0380915c, type: 3}
 --- !u!114 &114233326605509700
 MonoBehaviour:
   m_ObjectHideFlags: 1

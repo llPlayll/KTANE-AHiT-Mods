@@ -26,6 +26,8 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private List<GameObject> TopRightMarkings;
     [SerializeField] private GameObject PlayerObject;
     [SerializeField] private GameObject CellIndicatorsParent;
+    [SerializeField] private List<AudioClip> PonCollectionClips;
+    [SerializeField] private AudioClip HmmmClip;
     
     int[,] markings1 = { {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0},
@@ -40,18 +42,18 @@ public class rhythmMaze : MonoBehaviour
                          {0, 0, 1, 0, 0, 0},
                          {0, 0, 0, 1, 1, 1} };
     string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    string[,] walls1 = { { "DL", "UD", "R", "LR", "UDL", "UR" } ,
-                         { "UDL", "UR", "RL", "RL", "URL", "RL" } ,
-                         { "UD", "R", "RDL", "DL", "RD", "DL" } ,
-                         { "UDL", "RD", "UDL", "UD", "UD", "UDR" } ,
-                         { "U", "URD", "URL", "URL", "URDL", "UL" } ,
-                         { "RL", "UDL", "R", "RL", "UDL", "DR" } };
-    string[,] walls2 = { { "RDL", "RDL", "DL", "URD", "URL", "LDR" } ,
-                         { "URL", "URL", "UDL", "UR", "DL", "UR" } ,
-                         { "D", "RD", "URDL", "RL", "URL", "LD" } ,
-                         { "URD", "URL", "UDL", "RDL", "URL", "UL" } ,
-                         { "UR", "RDL", "UL", "UR", "RDL", "UL" } ,
-                         { "RL", "URL", "RL", "DL", "URD", "RL" } };
+    string[,] walls1 = { { "RD", "URDL", "UDL", "UD", "RD", "DL" },
+                         { "UDL", "UD", "UR", "UDL", "U", "URD" },
+                         { "U", "URD", "RDL", "URL", "RDL", "UL" },
+                         { "DL", "URD", "URL", "RDL", "UDL", "RD" },
+                         { "URD", "UDL", "D", "UD", "URD", "UL" },
+                         { "UR", "UDL", "UD", "UD", "UR", "L" } };
+    string[,] walls2 = { { "UL", "RD", "UL", "R", "UDL", "UR" },
+                         { "RDL", "URL", "RDL", "RDL", "URL", "RL" },
+                         { "URD", "DL", "URD", "UL", "RD", "DL" },
+                         { "UL", "URD", "URDL", "RL", "URL", "URL" },
+                         { "DL", "URD", "URL", "RDL", "RL", "RL" },
+                         { "UDL", "U", "RD", "UL", "RD", "RDL" } };
 
 
 
@@ -71,6 +73,8 @@ public class rhythmMaze : MonoBehaviour
     bool muted;
     int playerRow, playerCol;
     string playerColLetter;
+    int ponsCollected;
+    List<int> uncollectedPons;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -106,6 +110,8 @@ public class rhythmMaze : MonoBehaviour
 
             markings1 = FlipIntGrid(markings1);
             markings2 = FlipIntGrid(markings2);
+            walls1 = FlipMaze(walls1);
+            walls2 = FlipMaze(walls2);
         }
         else
         {
@@ -154,14 +160,16 @@ public class rhythmMaze : MonoBehaviour
                 dirPressed = "URDL"[i].ToString();
             }
         }
-        Log(dirPressed);
 
+        bool struck = false;
         switch (dirPressed)
         {
             case "U":
                 if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("U"))
                 {
+                    Log($"Trying to go up from ({playerRow}, {playerCol}) is a wall. Strike!");
                     GetComponent<KMBombModule>().HandleStrike();
+                    struck = true;
                 }
                 else
                 {
@@ -176,7 +184,9 @@ public class rhythmMaze : MonoBehaviour
             case "R":
                 if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("R"))
                 {
+                    Log($"Trying to go right from ({playerRow}, {playerCol}) is a wall. Strike!");
                     GetComponent<KMBombModule>().HandleStrike();
+                    struck = true;
                 }
                 else
                 {
@@ -191,7 +201,9 @@ public class rhythmMaze : MonoBehaviour
             case "D":
                 if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("D"))
                 {
+                    Log($"Trying to go down from ({playerRow}, {playerCol}) is a wall. Strike!");
                     GetComponent<KMBombModule>().HandleStrike();
+                    struck = true;
                 }
                 else
                 {
@@ -206,7 +218,9 @@ public class rhythmMaze : MonoBehaviour
             case "L":
                 if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("L"))
                 {
+                    Log($"Trying to go left from ({playerRow}, {playerCol}) is a wall. Strike!");
                     GetComponent<KMBombModule>().HandleStrike();
+                    struck = true;
                 }
                 else
                 {
@@ -220,6 +234,46 @@ public class rhythmMaze : MonoBehaviour
                 break;
             default:
                 break;
+        }
+
+        if (!struck)
+        {
+            CheckPonsAndGoal();
+        }
+    }
+
+    void CheckPonsAndGoal()
+    {
+        int playerLocation = playerRow * 10 + playerCol;
+        if (uncollectedPons.Contains(playerLocation))
+        {
+            uncollectedPons.Remove(playerLocation);
+            ponsCollected++;
+            Log($"Collected a Pon at ({playerLocation.ToString()[0]}, {playerLocation.ToString()[1]}). That's {ponsCollected} Pons collected.");
+            if (!deathWish)
+            {
+                Audio.PlaySoundAtTransform(PonCollectionClips[ponsCollected - 1].name, transform);
+            }
+        }
+        if (goalLocation == playerLocation)
+        {
+            if (ponsCollected >= 3)
+            {
+                Log($"Went to the goal at ({playerLocation.ToString()[0]}, {playerLocation.ToString()[1]}) with enough pons. Module solved.");
+                GetComponent<KMBombModule>().HandlePass();
+
+                ModuleSolved = true;
+                MazeParent.SetActive(false);
+                AudioSrc.Stop();
+            }
+            else
+            {
+                Log($"Went to the goal at ({playerLocation.ToString()[0]}, {playerLocation.ToString()[1]}) with less than 3 pons. Hmmm...");
+                if (!deathWish)
+                {
+                    Audio.PlaySoundAtTransform(HmmmClip.name, transform);
+                }
+            }
         }
     }
 
@@ -251,10 +305,23 @@ public class rhythmMaze : MonoBehaviour
         return newGrid;
     }
 
+    string[,] FlipMaze(string[,] grid)
+    {
+        string[,] newGrid = new string[6, 6];
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                newGrid[i, 6 - j - 1] = grid[i, j].Replace('L', '*').Replace('R', 'L').Replace('*', 'R');
+            }
+        }
+        return newGrid;
+    }
+
     string[,] ShiftGridHoriz(string[,] grid, int offset, bool right)
     {
         string[,] newGrid = new string[6, 6];
-        int shiftAmount = right ? 6 - offset : offset;
+        int shiftAmount = right ? 5 - offset : offset;
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 6; j++)
@@ -353,8 +420,9 @@ public class rhythmMaze : MonoBehaviour
         {
             int addLocation = AvoidDuplicates(basePonRows[i] * 10 + basePonColumns[i], ponLocations); ;
             ponLocations.Add(addLocation);
-            ponLog += $"({ponLocations[i].ToString()[0]}, {ponLocations[i].ToString()[1]})" + (i == basePonRows.Count - 1 ? "." : ", ");
+            ponLog += $"({ponLocations[i].ToString()[0]}, {ponLocations[i].ToString()[1]})" + (i == basePonRows.Count - 1 ? "" : ", ");
         }
+        uncollectedPons = ponLocations.ConvertAll(position => position);
         Log($"The pons are at coordinates: {ponLog}.");
 
         baseGoalRow = serialNumValues[0];
@@ -369,7 +437,7 @@ public class rhythmMaze : MonoBehaviour
         {
             if (location % 10 == 6)
             {
-                location = ((int)(location / 10) + 1) * 10;
+                location = ((int)(location / 10) + 1) * 10 + 1;
                 if (location == 70)
                 {
                     location = 11;

@@ -20160,12 +20160,17 @@ MonoBehaviour:
   AudioVolume: 0.25
   AudioClips:
   - {fileID: 8300000, guid: a9dbc95b6377cec4d93794deabc18d70, type: 3}
+  - {fileID: 8300000, guid: 4001fa53738173a40808a4833e40ba6b, type: 3}
+  - {fileID: 8300000, guid: 491f89858da0fc748a31b56c8907ae46, type: 3}
+  - {fileID: 8300000, guid: b95adec97e4f4af498a905fd0380915c, type: 3}
+  - {fileID: 8300000, guid: 12ea440772210d949ab55dc0e6509b4c, type: 3}
+  - {fileID: 8300000, guid: 8b09977d1673d64468730905ccb00aef, type: 3}
+  - {fileID: 8300000, guid: 1f8e66801ae459b49befb48574f2ae52, type: 3}
   StrikeCount: 3
   TimeLimit: 600
   BombSize: 1
   FrontFaceOnly: 1
-  EdgeworkConfiguration: {fileID: 11400000, guid: 0221ef9eee5a36d42adeea384480cc99,
-    type: 2}
+  EdgeworkConfiguration: {fileID: 0}
   TwitchPlaysActive: 1
   TwitchPlaysMode: 0
   turnSpeed: 128
