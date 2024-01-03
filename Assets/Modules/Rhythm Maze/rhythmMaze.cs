@@ -161,7 +161,7 @@ public class rhythmMaze : MonoBehaviour
         GeneratePonsAndGoal();
         playerRow = Rnd.Range(1, 7);
         playerCol = Rnd.Range(1, 7);
-        Log($"Starting position is ({playerRow}, {playerCol + 1}).");
+        Log($"Starting position is ({playerRow}, {playerCol}).");
         SetPlayerPos();
 
         AudioSrc.Play();
@@ -570,13 +570,14 @@ public class rhythmMaze : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use <!{0} start> to start the module. <!{0} mute> To press the status light. <!{0} move 1ur2dl> to move up then right on side 1, and then move down then left on side 2. The number in the top-left corner of the module is the side number.";
+    private readonly string TwitchHelpMessage = @"Use <!{0} start> to start the module. <!{0} peace> To disable Death Wish mode (if it wasn't forced). <!{0} collapse> To enable Death Wish mode. (Keep in mind that this doesn't award any additional points yet and you can't disable it after doing this command) <!{0} mute> To press the status light. <!{0} move 1ur2dl> to move up then right on side 1, and then move down then left on side 2. The number in the top-left corner of the module is the side number.";
     private bool TwitchPlaysActive = false;
 #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string Command)
     {
-        switch (Command)
+        string[] Args = Command.ToLowerInvariant().Split(new[] { ' ' }, 2);
+        switch (Args[0])
         {
             case "start":
                 if (!TPStarted)
@@ -600,22 +601,52 @@ public class rhythmMaze : MonoBehaviour
                 }
                 else
                 {
-                    string[] commandMoves = Command.ToLowerInvariant().Split(new[] { ' ' }, 2);
-                    if (commandMoves.Length != 2)
+                    if (Args.Length != 2)
                     {
                         yield return "sendtochatmessage Invalid moves!";
                         break;
                     }
                     int currentCheckSide = -1;
-                    for (int i = 0; i < commandMoves[1].Length; i++)
+                    bool invalidMoveList = false;
+                    for (int i = 0; i < Args[1].Length; i++)
                     {
-                        if (!"urdl12".Contains(commandMoves[1][i])) { yield return "sendtochatmessage Invalid moves!"; break; }
-                        else if ("urdl".Contains(commandMoves[1][i]) & currentCheckSide == -1 { yield return "sendtochatmessage Invalid moves!"; break; }
-                        else if ("12".Contains(commandMoves[1][i]) { currentCheckSide = (int)(commandMoves[1][i]); }
+                        if (!"urdl12".Contains(Args[1][i])) { yield return "sendtochatmessage Invalid moves!"; invalidMoveList = true; break; }
+                        else if ("urdl".Contains(Args[1][i]) & currentCheckSide == -1) { yield return "sendtochatmessage Invalid moves!"; invalidMoveList = true; break; }
+                        else if ("12".Contains(Args[1][i])) { currentCheckSide = (int)(Args[1][i]); }
+                    }
+                    if (invalidMoveList)
+                    {
+                        break;
+                    }
+                    yield return null;
+
+                    for (int i = 0; i < Args[1].Length; i++)
+                    {
+                        switch (Args[1][i])
+                        {
+                            case '1':
+                            case '2':
+                                while (currentSide != Int32.Parse(Args[1][i].ToString()) - 1)
+                                {
+                                    Log($"{currentSide} != {Int32.Parse(Args[1][i].ToString()) - 1}");
+                                    yield return null;
+                                }
+                                break;
+                            case 'u':
+                            case 'r':
+                            case 'd':
+                            case 'l':
+                                ArrowButtons["urdl".IndexOf(Args[1][i])].OnInteract();
+                                yield return new WaitForSeconds(0.01f);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 break;
             default:
+                yield return "sendtochatmessage Invalid command!";
                 break;
         }
     }
