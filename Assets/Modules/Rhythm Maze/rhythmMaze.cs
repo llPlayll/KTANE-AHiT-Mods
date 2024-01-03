@@ -11,6 +11,7 @@ public class rhythmMaze : MonoBehaviour
 {
     [SerializeField] private KMBombInfo Bomb;
     [SerializeField] private KMAudio Audio;
+    [SerializeField] private KMColorblindMode Colorblind;
     [SerializeField] private AudioSource AudioSrc;
 
     [SerializeField] private MeshRenderer ModuleRenderer;
@@ -28,7 +29,9 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private GameObject CellIndicatorsParent;
     [SerializeField] private List<AudioClip> PonCollectionClips;
     [SerializeField] private AudioClip HmmmClip;
-    
+    [SerializeField] private KMSelectable DefeatButton;
+    [SerializeField] private TextMesh ColorblindText;
+
     int[,] markings1 = { {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 1, 0, 0},
@@ -51,8 +54,8 @@ public class rhythmMaze : MonoBehaviour
     string[,] walls2 = { { "UL", "RD", "UL", "R", "UDL", "UR" },
                          { "RDL", "URL", "RDL", "RDL", "URL", "RL" },
                          { "URD", "DL", "URD", "UL", "RD", "DL" },
-                         { "UL", "URD", "URDL", "RL", "URL", "URL" },
-                         { "DL", "URD", "URL", "RDL", "RL", "RL" },
+                         { "UL", "URD", "URL", "RL", "URL", "URL" },
+                         { "DL", "URD", "RL", "RDL", "RL", "RL" },
                          { "UDL", "U", "RD", "UL", "RD", "RDL" } };
 
 
@@ -92,15 +95,26 @@ public class rhythmMaze : MonoBehaviour
         //button.OnInteract += delegate () { buttonPress(); return false; };
         StartButton.OnInteract += delegate () { StartButtonPressed(); return false; };
         MuteButton.OnInteract += delegate () { MuteSound(); return false; };
+        DefeatButton.OnInteract += delegate () { DisableCollapse(); return false; };
         foreach (KMSelectable arrowButton in ArrowButtons) {
             arrowButton.OnInteract += delegate () { ArrowPressed(arrowButton); return false; };
         }
         MazeParent.SetActive(false);
     }
 
+    void DisableCollapse()
+    {
+        deathWish = false;
+        GetComponent<KMBombModule>().HandleStrike();
+        Log("I don't have to prove myself to anyone.");
+        Log("You have stabilized the module, at a cost of a strike.");
+        SetupButtons();
+    }
+
     void StartButtonPressed()
     {
         StartButton.gameObject.SetActive(false);
+        DefeatButton.gameObject.SetActive(false);
         if (deathWish)
         {
             currentSide = Rnd.Range(0, 2);
@@ -281,14 +295,27 @@ public class rhythmMaze : MonoBehaviour
     {
         if (Bomb.GetModuleIDs().Contains("snatchersMap"))
         {
-            StartButtonRenderer.material = StartButtonMaterials[1];
-            deathWish = true;
-            Log("Looks like someone has a Death Wish...");
             Log("This bomb has a Snatcher's Map, the Time Rift has become unstable!");
+            deathWish = true;
+        }
+        else
+        {
+            deathWish = false;
+        }
+        SetupButtons();
+    }
+
+    void SetupButtons()
+    {
+        if (deathWish)
+        {
+            StartButtonRenderer.material = StartButtonMaterials[1];
+            DefeatButton.gameObject.SetActive(true);
         }
         else
         {
             StartButtonRenderer.material = StartButtonMaterials[0];
+            DefeatButton.gameObject.SetActive(false);
         }
     }
 
