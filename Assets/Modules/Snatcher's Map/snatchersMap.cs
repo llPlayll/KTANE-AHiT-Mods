@@ -235,7 +235,7 @@ public class snatchersMap : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} next To cycle the text once. !{0} cycle To cycle through all the words. !{0} cyclespeed # To set the cycling speed to # ticks. !{0} toggle To enter submission mode. !{0} submit Collect-A-Thon To submit the Collect-A-Thon deathwish. (use the names directly from the manual)";
+    private readonly string TwitchHelpMessage = @"Use <!{0} next> To cycle the text once. <!{0} cycle> To cycle through all the words. <!{0} cyclespeed #> To set the cycling speed to # ticks. <!{0} toggle> To enter submission mode. <!{0} submit Collect-A-Thon> To submit the Collect-A-Thon deathwish. (use the names directly from the manual)";
 #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string Command)

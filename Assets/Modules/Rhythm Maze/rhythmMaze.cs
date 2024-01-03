@@ -31,6 +31,9 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private AudioClip HmmmClip;
     [SerializeField] private KMSelectable DefeatButton;
     [SerializeField] private TextMesh ColorblindText;
+    [SerializeField] private GameObject DeathWishTimerParent;
+    [SerializeField] private TextMesh DeathWishTimerSeconds;
+    [SerializeField] private TextMesh DeathWishTimerMilliseconds;
 
     int[,] markings1 = { {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0},
@@ -79,6 +82,11 @@ public class rhythmMaze : MonoBehaviour
     int ponsCollected;
     List<int> uncollectedPons;
 
+    int deathWishSeconds = 600;
+    int deathWishMilliseconds = 0;
+
+    bool TPStarted;
+
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved;
@@ -113,6 +121,7 @@ public class rhythmMaze : MonoBehaviour
 
     void StartButtonPressed()
     {
+        TPStarted = true;
         StartButton.gameObject.SetActive(false);
         DefeatButton.gameObject.SetActive(false);
         if (deathWish)
@@ -126,6 +135,9 @@ public class rhythmMaze : MonoBehaviour
             markings2 = FlipIntGrid(markings2);
             walls1 = FlipMaze(walls1);
             walls2 = FlipMaze(walls2);
+
+            DeathWishTimerParent.SetActive(true);
+            StartCoroutine("DeathWishTimerRoutine");
         }
         else
         {
@@ -155,6 +167,7 @@ public class rhythmMaze : MonoBehaviour
         AudioSrc.Play();
         StartCoroutine("SidesCycle");
         SetMarkings();
+        SetColorblindText();
     }
 
     void MuteSound()
@@ -278,6 +291,7 @@ public class rhythmMaze : MonoBehaviour
 
                 ModuleSolved = true;
                 MazeParent.SetActive(false);
+                ColorblindText.gameObject.SetActive(false);
                 AudioSrc.Stop();
             }
             else
@@ -507,6 +521,21 @@ public class rhythmMaze : MonoBehaviour
         Debug.Log($"[Rhythm Maze #{ModuleId}] {arg}");
     }
 
+    void SetColorblindText()
+    {
+        if (!deathWish)
+        {
+            if (Colorblind.ColorblindModeActive & !TwitchPlaysActive)
+            {
+                ColorblindText.text = "PB"[currentSide].ToString();
+            }
+        }
+        if (TwitchPlaysActive)
+        {
+            ColorblindText.text = (currentSide + 1).ToString();
+        }
+    }
+
     IEnumerator SidesCycle()
     {
         while (!ModuleSolved)
@@ -514,6 +543,7 @@ public class rhythmMaze : MonoBehaviour
             yield return new WaitForSeconds(waitTime);
             currentSide++;
             currentSide %= 2;
+            SetColorblindText();
             if (!deathWish)
             {
                 ModuleRenderer.material = SidesMaterials[currentSide];
@@ -522,13 +552,72 @@ public class rhythmMaze : MonoBehaviour
         }
     }
 
+    IEnumerator DeathWishTimerRoutine()
+    {
+        while (deathWishSeconds > 0 || deathWishMilliseconds > 0)
+        {
+            deathWishMilliseconds -= 1;
+            if (deathWishMilliseconds == -1)
+            {
+                deathWishSeconds -= 1;
+                deathWishMilliseconds = 99;
+            }
+            DeathWishTimerSeconds.text = deathWishSeconds.ToString();
+            DeathWishTimerMilliseconds.text = deathWishMilliseconds.ToString().Length == 2 ? deathWishMilliseconds.ToString() : "0" + deathWishMilliseconds.ToString();
+            yield return new WaitForSeconds(0.01f);
+        }
+        GetComponent<KMBombModule>().HandleStrike();
+    }
+
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} to do something.";
+    private readonly string TwitchHelpMessage = @"Use <!{0} start> to start the module. <!{0} mute> To press the status light. <!{0} move 1ur2dl> to move up then right on side 1, and then move down then left on side 2. The number in the top-left corner of the module is the side number.";
+    private bool TwitchPlaysActive = false;
 #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string Command)
     {
-        yield return null;
+        switch (Command)
+        {
+            case "start":
+                if (!TPStarted)
+                {
+                    yield return null;
+                    StartButton.OnInteract();
+                }
+                else
+                {
+                    yield return "sendtochatmessage Module already started!";
+                }
+                break;
+            case "mute":
+                yield return null;
+                MuteButton.OnInteract();
+                break;
+            case "move":
+                if (!TPStarted)
+                {
+                    yield return "sendtochatmessage Module not started yet!";
+                }
+                else
+                {
+                    string[] commandMoves = Command.ToLowerInvariant().Split(new[] { ' ' }, 2);
+                    if (commandMoves.Length != 2)
+                    {
+                        yield return "sendtochatmessage Invalid moves!";
+                        break;
+                    }
+                    int currentCheckSide = -1;
+                    for (int i = 0; i < commandMoves[1].Length; i++)
+                    {
+                        if (!"urdl12".Contains(commandMoves[1][i])) { yield return "sendtochatmessage Invalid moves!"; break; }
+                        else if ("urdl".Contains(commandMoves[1][i]) & currentCheckSide == -1 { yield return "sendtochatmessage Invalid moves!"; break; }
+                        else if ("12".Contains(commandMoves[1][i]) { currentCheckSide = (int)(commandMoves[1][i]); }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     IEnumerator TwitchHandleForcedSolve()
