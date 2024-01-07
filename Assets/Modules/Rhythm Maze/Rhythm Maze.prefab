@@ -6655,6 +6655,9 @@ MonoBehaviour:
   DeathWishTimerParent: {fileID: 1665626484138558}
   DeathWishTimerSeconds: {fileID: 102322723676346454}
   DeathWishTimerMilliseconds: {fileID: 102704641477985176}
+  TimepieceJingles:
+  - {fileID: 8300000, guid: 5952c9bf5f35d50438ccb1859f5c7e34, type: 3}
+  - {fileID: 8300000, guid: bb9340522e766d0409d7e325f1baceda, type: 3}
 --- !u!114 &114233326605509700
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -34,6 +34,7 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private GameObject DeathWishTimerParent;
     [SerializeField] private TextMesh DeathWishTimerSeconds;
     [SerializeField] private TextMesh DeathWishTimerMilliseconds;
+    [SerializeField] private List<AudioClip> TimepieceJingles;
 
     int[,] markings1 = { {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0},
@@ -86,21 +87,26 @@ public class rhythmMaze : MonoBehaviour
     int deathWishMilliseconds = 0;
 
     bool TPStarted;
+    bool DWForced;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved;
 
+    private RhythmMazeSettings Settings = new RhythmMazeSettings();
+
     void Awake()
     {
         ModuleId = ModuleIdCounter++;
-        /*
-        foreach (KMSelectable object in keypad) {
-            object.OnInteract += delegate () { keypadPress(object); return false; };
-            }
-        */
 
-        //button.OnInteract += delegate () { buttonPress(); return false; };
+        ModConfig<RhythmMazeSettings> modConfig = new ModConfig<RhythmMazeSettings>("RhythmMazeSettings");
+        Settings = modConfig.Settings;
+        modConfig.Settings = Settings;
+
+        muted = Settings.startMuted;
+        deathWish = Settings.forceDeathWish;
+        DWForced = Settings.forceDeathWish;
+
         StartButton.OnInteract += delegate () { StartButtonPressed(); return false; };
         MuteButton.OnInteract += delegate () { MuteSound(); return false; };
         DefeatButton.OnInteract += delegate () { DisableCollapse(); return false; };
@@ -121,6 +127,7 @@ public class rhythmMaze : MonoBehaviour
 
     void StartButtonPressed()
     {
+        AudioSrc.mute = muted;
         TPStarted = true;
         StartButton.gameObject.SetActive(false);
         DefeatButton.gameObject.SetActive(false);
@@ -292,6 +299,8 @@ public class rhythmMaze : MonoBehaviour
                 ModuleSolved = true;
                 MazeParent.SetActive(false);
                 ColorblindText.gameObject.SetActive(false);
+
+                Audio.PlaySoundAtTransform(deathWish ? TimepieceJingles[1].name : TimepieceJingles[0].name, transform);
                 AudioSrc.Stop();
             }
             else
@@ -307,9 +316,15 @@ public class rhythmMaze : MonoBehaviour
 
     void Start()
     {
-        if (Bomb.GetModuleIDs().Contains("snatchersMap"))
+        Log($"{2 | -2}");
+        if (DWForced)
         {
-            Log("This bomb has a Snatcher's Map, the Time Rift has become unstable!");
+            Log("Death Wish has been forced through mod settings, the Module has become unstable!");
+            deathWish = true;
+        }
+        else if (Bomb.GetModuleIDs().Contains("snatchersMap"))
+        {
+            Log("This bomb has a Snatcher's Map, the Module has become unstable!");
             deathWish = true;
         }
         else
@@ -324,7 +339,7 @@ public class rhythmMaze : MonoBehaviour
         if (deathWish)
         {
             StartButtonRenderer.material = StartButtonMaterials[1];
-            DefeatButton.gameObject.SetActive(true);
+            DefeatButton.gameObject.SetActive(!DWForced);
         }
         else
         {
@@ -570,7 +585,7 @@ public class rhythmMaze : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use <!{0} start> to start the module. <!{0} peace> To disable Death Wish mode (if it wasn't forced). <!{0} collapse> To enable Death Wish mode. (Keep in mind that this doesn't award any additional points yet and you can't disable it after doing this command) <!{0} mute> To press the status light. <!{0} move 1ur2dl> to move up then right on side 1, and then move down then left on side 2. The number in the top-left corner of the module is the side number.";
+    private readonly string TwitchHelpMessage = @"Use <!{0} start> to start the module. <!{0} peace> To disable Death Wish mode (if it wasn't forced). <!{0} collapse> To force Death Wish mode. (Keep in mind that this doesn't award any additional points yet and you can't disable it after doing this command) <!{0} mute> To press the status light. <!{0} move 1ur2dl> to move up then right on side 1, and then move down then left on side 2. The number in the top-left corner of the module is the side number.";
     private bool TwitchPlaysActive = false;
 #pragma warning restore 414
 
@@ -588,6 +603,44 @@ public class rhythmMaze : MonoBehaviour
                 else
                 {
                     yield return "sendtochatmessage Module already started!";
+                }
+                break;
+            case "peace":
+                if (TPStarted)
+                {
+                    yield return "sendtochatmessage Module already started!";
+                    break;
+                }
+                if (!deathWish)
+                {
+                    yield return "sendtochatmessage Death Wish isn't enabled!";
+                }
+                else if (DWForced)
+                {
+                    yield return "sendtochatmessage Death Wish has been forced, can't go back now!";
+                }
+                else
+                {
+                    yield return null;
+                    DefeatButton.OnInteract();
+                }
+                break;
+            case "collapse":
+                if (TPStarted)
+                {
+                    yield return "sendtochatmessage Module already started!";
+                    break;
+                }
+                if (!deathWish)
+                {
+                    yield return "sendtochatmessage Good Luck!";
+                    DWForced = true;
+                    deathWish = true;
+                    SetupButtons();
+                }
+                else
+                {
+                    yield return "sendtochatmessage Death Wish already enabled!";
                 }
                 break;
             case "mute":
@@ -628,7 +681,6 @@ public class rhythmMaze : MonoBehaviour
                             case '2':
                                 while (currentSide != Int32.Parse(Args[1][i].ToString()) - 1)
                                 {
-                                    Log($"{currentSide} != {Int32.Parse(Args[1][i].ToString()) - 1}");
                                     yield return null;
                                 }
                                 break;
@@ -655,4 +707,33 @@ public class rhythmMaze : MonoBehaviour
     {
         yield return null;
     }
+
+    class RhythmMazeSettings
+    {
+        public bool startMuted = false;
+        public bool forceDeathWish = false;
+    }
+
+    static Dictionary<string, object>[] TweaksEditorSettings = new Dictionary<string, object>[]
+    {
+        new Dictionary<string, object>
+        {
+            { "Filename", "RhythmMazeSettings.json" },
+            { "Name", "Rhythm Maze Settings" },
+            { "Listing", new List<Dictionary<string, object>>
+                {
+                    new Dictionary<string, object>
+                    {
+                        { "Key", "startMuted" },
+                        { "Text", "Determines whether or not the module will start muted." }
+                    },
+                    new Dictionary<string, object>
+                    {
+                        { "Key", "forceDeathWish" },
+                        { "Text", "Forces the Death Wish mode. (Cannot be disabled through the module afterwards)" }
+                    }
+                }
+            }
+        }
+    };
 }
