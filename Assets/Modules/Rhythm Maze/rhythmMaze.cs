@@ -84,7 +84,7 @@ public class rhythmMaze : MonoBehaviour
     int ponsCollected;
     List<int> uncollectedPons;
 
-    int deathWishSeconds = 480;
+    int deathWishSeconds = 180;
     int deathWishMilliseconds = 0;
 
     bool TPStarted;
@@ -300,6 +300,7 @@ public class rhythmMaze : MonoBehaviour
                 ModuleSolved = true;
                 MazeParent.SetActive(false);
                 ColorblindText.gameObject.SetActive(false);
+                StopCoroutine("DeathWishTimerRoutine");
 
                 Audio.PlaySoundAtTransform(deathWish ? TimepieceJingles[1].name : TimepieceJingles[0].name, transform);
                 AudioSrc.Stop();
@@ -384,7 +385,7 @@ public class rhythmMaze : MonoBehaviour
         TPStarted = false;
         ModuleRenderer.material = BlackMat;
         ColorblindText.text = "";
-        deathWishSeconds = 600;
+        deathWishSeconds = 180;
         deathWishMilliseconds = 0;
         
         markings1 = new int[,] { {0, 0, 0, 0, 0, 0},

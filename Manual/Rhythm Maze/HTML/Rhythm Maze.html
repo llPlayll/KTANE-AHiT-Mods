@@ -114,7 +114,7 @@
         }
 
         .page-footer::before { content: 'Page '; }
-        .page-footer::after { content: ' of 3'; }
+        .page-footer::after { content: ' of 4'; }
     </style>
 </head>
 <body>
@@ -210,13 +210,30 @@
                 <div class="page-content">
                     <h2>Section Collapse</h2>
                     <p>As said before, you may disable the Death Wish mode, if it hasn't been forced by any means, by pressing the bottom-left defeat button.</p>
-                    <p>When the module enters Death Wish mode, it will be changed both visually and in the solve process, in the ways described below:</p>
+                    <p>When the module enters Death Wish mode, it will mostly function like Normal Mode, but it will be changed both visually and in the solve process in the ways described below:</p>
                     <ul>
-                        <li>The most notable thing is that the module becomes timed. <b>After you start the module, you will have 8 minutes to solve the it</b>.
+                        <li>
+                            The most notable thing is that the module becomes timed. <b>After you start the module, you will have 3 minutes to solve the it</b>.
                             The timer will be visible in the bottom-right corner of the module, with a format of "Seconds Milliseconds".
-                            Once the 8 minutes run out, the module will strike and fully reset to the start, with a new pattern of markings.
+                            Once the 3 minutes run out, the module will strike and fully reset to the start, with a new pattern of markings and a new starting location.
                         </li>
+                        <li>The module will switch its sides faster, and will play a different faster song, which may still be muted/unmuted by pressing the status light.</li>
+                        <li>
+                            The module will still alternate between a Pink and a Blue side with their respective grids from <b>Section Normal Mode</b>, but they both will be displayed as a purple color. The only way to differentiate the sides is by using the markings.
+                            (Both of the markings grids do not share any patterns, which means that there is a total amount of 32 unique 3x3 patterns, 16 per each grid)
+                        </li>
+                        <li>A change about the solving process is that <b>all 4 of the grids are going to be horizontally flipped.</b> For the mazes, do not forget to horizontally flip the walls (Left wall -> Right Wall and other way around) along with the cells themselves. ((1, 1) flips to (1, 6))</li>
+                        <li>
+                            Once you find the markings pattern in the flipped markings grid, <b>note down the position of the top-right cell of the pattern, instead of the top-left.</b>
+                            After that, shift the flipped mazes [R - 1] up, and <b>[6 - C] to the right, which will make the noted coordinate the top-right position of the 6x6 grid.</b>
+                        </li>
+                        <li>The module will only have 3 pons now, instead of 5. Pair the 1st number with the 2nd number, 3rd with 4th and 5th with 6th, and move them in case of duplicates.
+                            These are your 3 pon coordinates. The exit is still calculated by pairing the 1st number with the 6th and moving it to a non-pon position.
+                        </li>
+                        <li>If the defuser visits a pon or an exit cell, no sound-effect confirmation will be played.</li>
+                        <li>Collect 3 pons and escape this madness through the exit. Good Luck!</li>
                     </ul>
+                    <p>Hint to solve this mode faster: flip your grids and prepare all of the necessary coordinates before starting the module.</p>
                 </div>
                 <div class="page-footer relative-footer">4</div>
             </div>
