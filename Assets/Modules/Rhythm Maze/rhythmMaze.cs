@@ -35,6 +35,7 @@ public class rhythmMaze : MonoBehaviour
     [SerializeField] private TextMesh DeathWishTimerSeconds;
     [SerializeField] private TextMesh DeathWishTimerMilliseconds;
     [SerializeField] private List<AudioClip> TimepieceJingles;
+    [SerializeField] private Material BlackMat;
 
     int[,] markings1 = { {0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0},
@@ -83,7 +84,7 @@ public class rhythmMaze : MonoBehaviour
     int ponsCollected;
     List<int> uncollectedPons;
 
-    int deathWishSeconds = 600;
+    int deathWishSeconds = 480;
     int deathWishMilliseconds = 0;
 
     bool TPStarted;
@@ -316,7 +317,6 @@ public class rhythmMaze : MonoBehaviour
 
     void Start()
     {
-        Log($"{2 | -2}");
         if (DWForced)
         {
             Log("Death Wish has been forced through mod settings, the Module has become unstable!");
@@ -336,6 +336,7 @@ public class rhythmMaze : MonoBehaviour
 
     void SetupButtons()
     {
+        StartButton.gameObject.SetActive(true);
         if (deathWish)
         {
             StartButtonRenderer.material = StartButtonMaterials[1];
@@ -346,6 +347,70 @@ public class rhythmMaze : MonoBehaviour
             StartButtonRenderer.material = StartButtonMaterials[0];
             DefeatButton.gameObject.SetActive(false);
         }
+    }
+
+    void SetColorblindText()
+    {
+        if (!deathWish)
+        {
+            if (Colorblind.ColorblindModeActive & !TwitchPlaysActive)
+            {
+                ColorblindText.text = "PB"[currentSide].ToString();
+            }
+        }
+        if (TwitchPlaysActive)
+        {
+            ColorblindText.text = (currentSide + 1).ToString();
+        }
+    }
+
+    void ResetModule()
+    {
+        Start();
+        SetupButtons();
+
+        ponLocations.Clear();
+        basePonRows.Clear();
+        basePonColumns.Clear();
+        uncollectedPons.Clear();
+
+        AudioSrc.Stop();
+
+        StopCoroutine("SidesCycle");
+        MazeParent.SetActive(false);
+        DeathWishTimerParent.SetActive(false);
+        GetComponentInParent<KMSelectable>().UpdateChildrenProperly();
+
+        TPStarted = false;
+        ModuleRenderer.material = BlackMat;
+        ColorblindText.text = "";
+        deathWishSeconds = 600;
+        deathWishMilliseconds = 0;
+        
+        markings1 = new int[,] { {0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 1, 0, 0},
+                                 {0, 1, 1, 0, 0, 0},
+                                 {0, 0, 0, 0, 0, 0},
+                                 {1, 0, 0, 1, 1, 0} };
+        markings2 = new int[,] { {0, 0, 0, 0, 0, 0},
+                                 {0, 0, 0, 1, 0, 0},
+                                 {1, 0, 1, 0, 1, 0},
+                                 {0, 0, 0, 0, 0, 0},
+                                 {0, 0, 1, 0, 0, 0},
+                                 {0, 0, 0, 1, 1, 1} };
+        walls1 = new string[,] { { "RD", "URDL", "UDL", "UD", "RD", "DL" },
+                                 { "UDL", "UD", "UR", "UDL", "U", "URD" },
+                                 { "U", "URD", "RDL", "URL", "RDL", "UL" },
+                                 { "DL", "URD", "URL", "RDL", "UDL", "RD" },
+                                 { "URD", "UDL", "D", "UD", "URD", "UL" },
+                                 { "UR", "UDL", "UD", "UD", "UR", "L" } };
+        walls2 = new string[,] { { "UL", "RD", "UL", "R", "UDL", "UR" },
+                                 { "RDL", "URL", "RDL", "RDL", "URL", "RL" },
+                                 { "URD", "DL", "URD", "UL", "RD", "DL" },
+                                 { "UL", "URD", "URL", "RL", "URL", "URL" },
+                                 { "DL", "URD", "RL", "RDL", "RL", "RL" },
+                                 { "UDL", "U", "RD", "UL", "RD", "RDL" } };
     }
 
     int[,] FlipIntGrid(int[,] grid)
@@ -536,21 +601,6 @@ public class rhythmMaze : MonoBehaviour
         Debug.Log($"[Rhythm Maze #{ModuleId}] {arg}");
     }
 
-    void SetColorblindText()
-    {
-        if (!deathWish)
-        {
-            if (Colorblind.ColorblindModeActive & !TwitchPlaysActive)
-            {
-                ColorblindText.text = "PB"[currentSide].ToString();
-            }
-        }
-        if (TwitchPlaysActive)
-        {
-            ColorblindText.text = (currentSide + 1).ToString();
-        }
-    }
-
     IEnumerator SidesCycle()
     {
         while (!ModuleSolved)
@@ -582,6 +632,7 @@ public class rhythmMaze : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         GetComponent<KMBombModule>().HandleStrike();
+        ResetModule();
     }
 
 #pragma warning disable 414
