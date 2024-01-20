@@ -89,6 +89,7 @@ public class rhythmMaze : MonoBehaviour
 
     bool TPStarted;
     bool DWForced;
+    int TPOffset = 0;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -135,6 +136,7 @@ public class rhythmMaze : MonoBehaviour
         if (deathWish)
         {
             currentSide = Rnd.Range(0, 2);
+            TPOffset = Rnd.Range(0, 1);
             ModuleRenderer.material = SidesMaterials[2];
             AudioSrc.clip = Songs[1];
             waitTime = 2f / 3f;
@@ -361,7 +363,7 @@ public class rhythmMaze : MonoBehaviour
         }
         if (TwitchPlaysActive)
         {
-            ColorblindText.text = (currentSide + 1).ToString();
+            ColorblindText.text = ((currentSide + TPOffset) % 2 + 1).ToString();
         }
     }
 
@@ -725,21 +727,23 @@ public class rhythmMaze : MonoBehaviour
                     }
                     yield return null;
 
+                    string TPCurSide = "";
                     for (int i = 0; i < Args[1].Length; i++)
                     {
                         switch (Args[1][i])
                         {
                             case '1':
                             case '2':
-                                while (currentSide != Int32.Parse(Args[1][i].ToString()) - 1)
-                                {
-                                    yield return null;
-                                }
+                                TPCurSide = Args[1][i].ToString();
                                 break;
                             case 'u':
                             case 'r':
                             case 'd':
                             case 'l':
+                                while (ColorblindText.text != TPCurSide)
+                                {
+                                    yield return null;
+                                }
                                 ArrowButtons["urdl".IndexOf(Args[1][i])].OnInteract();
                                 yield return new WaitForSeconds(0.01f);
                                 break;
