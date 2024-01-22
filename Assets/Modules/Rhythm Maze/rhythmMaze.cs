@@ -204,7 +204,7 @@ public class rhythmMaze : MonoBehaviour
             case "U":
                 if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("U"))
                 {
-                    Log($"Trying to go up from ({playerRow}, {playerCol}) is a wall. Strike!");
+                    Log($"Trying to go up from ({playerRow}, {playerCol}) {SideLog()} is a wall. Strike!");
                     GetComponent<KMBombModule>().HandleStrike();
                     struck = true;
                 }
@@ -221,7 +221,7 @@ public class rhythmMaze : MonoBehaviour
             case "R":
                 if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("R"))
                 {
-                    Log($"Trying to go right from ({playerRow}, {playerCol}) is a wall. Strike!");
+                    Log($"Trying to go right from ({playerRow}, {playerCol}) {SideLog()} is a wall. Strike!");
                     GetComponent<KMBombModule>().HandleStrike();
                     struck = true;
                 }
@@ -238,7 +238,7 @@ public class rhythmMaze : MonoBehaviour
             case "D":
                 if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("D"))
                 {
-                    Log($"Trying to go down from ({playerRow}, {playerCol}) is a wall. Strike!");
+                    Log($"Trying to go down from ({playerRow}, {playerCol}) {SideLog()} is a wall. Strike!");
                     GetComponent<KMBombModule>().HandleStrike();
                     struck = true;
                 }
@@ -255,7 +255,7 @@ public class rhythmMaze : MonoBehaviour
             case "L":
                 if ((currentSide == 0 ? walls1 : walls2)[playerRow - 1, playerCol - 1].Contains("L"))
                 {
-                    Log($"Trying to go left from ({playerRow}, {playerCol}) is a wall. Strike!");
+                    Log($"Trying to go left from ({playerRow}, {playerCol}) {SideLog()} is a wall. Strike!");
                     GetComponent<KMBombModule>().HandleStrike();
                     struck = true;
                 }
@@ -279,6 +279,18 @@ public class rhythmMaze : MonoBehaviour
         }
     }
 
+    string SideLog()
+    {
+        if (deathWish)
+        {
+            return $"on side {currentSide}";
+        }
+        else
+        {
+            return $"on the {(currentSide == 0 ? "Pink" : "Blue")} side";
+        }
+    }
+
     void CheckPonsAndGoal()
     {
         int playerLocation = playerRow * 10 + playerCol;
@@ -286,7 +298,7 @@ public class rhythmMaze : MonoBehaviour
         {
             uncollectedPons.Remove(playerLocation);
             ponsCollected++;
-            Log($"Collected a Pon at ({playerLocation.ToString()[0]}, {playerLocation.ToString()[1]}). That's {ponsCollected} Pons collected.");
+            Log($"Collected a Pon at ({playerLocation.ToString()[0]}, {playerLocation.ToString()[1]}). That's {ponsCollected} Pon{(ponsCollected > 1 ? "s" : "")} collected.");
             if (!deathWish)
             {
                 Audio.PlaySoundAtTransform(PonCollectionClips[ponsCollected - 1].name, transform);

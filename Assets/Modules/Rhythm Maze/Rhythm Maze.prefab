@@ -4919,7 +4919,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: e9bf859081531344b9b6dba0097e070a, type: 2}
+  - {fileID: 2100000, guid: 1379ef7c8be692f44bff0474267a385f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6658,7 +6658,7 @@ MonoBehaviour:
   TimepieceJingles:
   - {fileID: 8300000, guid: 5952c9bf5f35d50438ccb1859f5c7e34, type: 3}
   - {fileID: 8300000, guid: bb9340522e766d0409d7e325f1baceda, type: 3}
-  BlackMat: {fileID: 2100000, guid: e9bf859081531344b9b6dba0097e070a, type: 2}
+  BlackMat: {fileID: 2100000, guid: 1379ef7c8be692f44bff0474267a385f, type: 2}
 --- !u!114 &114233326605509700
 MonoBehaviour:
   m_ObjectHideFlags: 1

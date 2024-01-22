@@ -133,6 +133,7 @@ public class snatchersMap : MonoBehaviour
         InfoText.gameObject.SetActive(false);
         Map.SetActive(true);
         TPSubmissionMode = true;
+        GetComponent<KMSelectable>().UpdateChildrenProperly();
     }
 
     void StampPressed(KMSelectable stamp)
@@ -214,28 +215,24 @@ public class snatchersMap : MonoBehaviour
     {
         if (charNum < 5)
         {
-            return 500;
+            return 450;
         }
         else if (charNum == 5)
         {
-            return 400;
+            return 350;
         }
         else if (charNum < 8)
         {
-            return 300;
-        }
-        else if (charNum < 12)
-        {
-            return 200;
+            return 250;
         }
         else
         {
-            return 100;
+            return 150;
         }
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use <!{0} next> To cycle the text once. <!{0} cycle> To cycle through all the words. <!{0} cyclespeed #> To set the cycling speed to # ticks. <!{0} toggle> To enter submission mode. <!{0} submit Collect-A-Thon> To submit the Collect-A-Thon deathwish. (use the names directly from the manual)";
+    private readonly string TwitchHelpMessage = @"Use <!{0} next> To cycle the text once. <!{0} cycle> To cycle through all the words. <!{0} cyclespeed #> To set the cycling speed to # timer ticks. <!{0} toggle> To enter submission mode. <!{0} submit Collect-A-Thon> To submit the Collect-A-Thon deathwish. (use the names directly from the manual)";
 #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string Command)
@@ -253,10 +250,20 @@ public class snatchersMap : MonoBehaviour
         switch (commandArgs[0].ToLowerInvariant())
         {
             case ("next"):
+                if (TPSubmissionMode)
+                {
+                    yield return "sendtochatmessage Already in submission mode!";
+                    yield break;
+                }
                 yield return null;
                 CycleButton.OnInteractEnded();
                 break;
             case ("cycle"):
+                if (TPSubmissionMode)
+                {
+                    yield return "sendtochatmessage Already in submission mode!";
+                    yield break;
+                }
                 yield return null;
                 for (int i = 0; i < infoWordCount; i++)
                 {
@@ -276,6 +283,11 @@ public class snatchersMap : MonoBehaviour
                 yield return null;
                 break;
             case ("cyclespeed"):
+                if (TPSubmissionMode)
+                {
+                    yield return "sendtochatmessage Already in submission mode!";
+                    yield break;
+                }
                 if (commandArgs.Length < 2)
                 {
                     yield return "sendtochatmessage Cycle speed not specified!";
@@ -297,6 +309,11 @@ public class snatchersMap : MonoBehaviour
                 }
                 break;
             case ("toggle"):
+                if (TPSubmissionMode)
+                {
+                    yield return "sendtochatmessage Already in submission mode!";
+                    yield break;
+                }
                 int TPtoggleTime = (int)Bomb.GetTime();
                 int TPtoggleGoalTime = TPtoggleTime - 1;
                 CycleButton.OnInteract();
