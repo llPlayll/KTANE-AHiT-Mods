@@ -7,10 +7,13 @@ using UnityEngine;
 using KModkit;
 using Rnd = UnityEngine.Random;
 
-public class template : MonoBehaviour
+public class riftRoulette : MonoBehaviour
 {
     [SerializeField] private KMBombInfo Bomb;
     [SerializeField] private KMAudio Audio;
+
+    [SerializeField] private GameObject DeactivatedIcon;
+    [SerializeField] private List<Material> IconMaterials;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -30,12 +33,26 @@ public class template : MonoBehaviour
 
     void Start()
     {
+        if (Bomb.GetModuleIDs().Contains("rhythmMaze"))
+        {
+            DeactivatedIcon.SetActive(true);
+            DeactivatedIcon.GetComponent<MeshRenderer>().material = IconMaterials[Bomb.GetModuleIDs().Contains("snatchersMap") ? 1 : 0];
+        }
+        else
+        {
+            DeactivatedIcon.SetActive(false);
+            Activate();
+        }
+    }
+
+    void Activate()
+    {
 
     }
 
     void Log(string arg)
     {
-        Debug.Log($"[Template #{ModuleId}] {arg}");
+        Debug.Log($"[Rift Roulette #{ModuleId}] {arg}");
     }
 
 #pragma warning disable 414

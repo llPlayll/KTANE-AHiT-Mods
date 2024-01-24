@@ -41,10 +41,9 @@ GameObject:
   - component: {fileID: 114645267733388414}
   - component: {fileID: 114937448797953234}
   - component: {fileID: 114925785300877996}
-  - component: {fileID: 114302603966672388}
   - component: {fileID: 114540243257715840}
   m_Layer: 0
-  m_Name: Template
+  m_Name: Rift Roulette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,6 +81,26 @@ GameObject:
   - component: {fileID: 114179526100006704}
   m_Layer: 0
   m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1 &1605609389858314
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4231619169142978}
+  - component: {fileID: 33369212845318402}
+  - component: {fileID: 23638506469512080}
+  - component: {fileID: 65172490321932668}
+  - component: {fileID: 114393995198317464}
+  - component: {fileID: 114222383388397012}
+  m_Layer: 0
+  m_Name: Deactivated Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,9 +161,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1137567616980298}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.666061, y: -11.729138, z: -6.436943}
+  m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 4231619169142978}
   - {fileID: 4105550177130508}
   - {fileID: 4853704035117108}
   m_Father: {fileID: 0}
@@ -165,8 +185,21 @@ Transform:
   - {fileID: 4931294264866558}
   - {fileID: 4827541509298914}
   m_Father: {fileID: 4083352987931918}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4231619169142978
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1605609389858314}
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.0000002980232}
+  m_LocalPosition: {x: 0, y: 0.0152, z: 0}
+  m_LocalScale: {x: 0.01224, y: 0.01224, z: 0.01224}
+  m_Children: []
+  m_Father: {fileID: 4083352987931918}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: -180.00002, z: 0}
 --- !u!4 &4758636388020368
 Transform:
   m_ObjectHideFlags: 1
@@ -204,7 +237,7 @@ Transform:
   m_LocalScale: {x: 0.0015000001, y: 0.0015000033, z: 1}
   m_Children: []
   m_Father: {fileID: 4083352987931918}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4931294264866558
 Transform:
@@ -300,6 +333,40 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!23 &23638506469512080
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1605609389858314}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: 09d6a831b68bd504988a96d13804e413, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
 --- !u!23 &23778178069078862
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -341,6 +408,13 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1208336434831700}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!33 &33369212845318402
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1605609389858314}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!33 &33848270532001512
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -355,6 +429,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1068904268420750}
   m_Mesh: {fileID: 4300000, guid: 1c46642b7f907d844bcdfcca8625afdd, type: 3}
+--- !u!65 &65172490321932668
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1605609389858314}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 2.220446e-16, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &65345617092808620
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -403,6 +489,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - GUI/KT 3D Text
+--- !u!114 &114222383388397012
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1605609389858314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - UI/Default
 --- !u!114 &114253871060708144
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -416,18 +515,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - Standard
---- !u!114 &114302603966672388
+--- !u!114 &114393995198317464
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1137567616980298}
+  m_GameObject: {fileID: 1605609389858314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
+  m_Script: {fileID: 1702003387, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _colorblindMode: 0
+  Parent: {fileID: 0}
+  Children: []
+  IsPassThrough: 0
+  ChildRowLength: 0
+  Highlight: {fileID: 0}
+  SelectableColliders:
+  - {fileID: 65172490321932668}
+  DefaultSelectableIndex: 0
+  AllowSelectionWrapX: 0
+  AllowSelectionWrapY: 0
+  ForceSelectionHighlight: 0
+  ForceInteractionHighlight: 0
 --- !u!114 &114540243257715840
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -441,6 +551,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Bomb: {fileID: 114645267733388414}
   Audio: {fileID: 114947872984060302}
+  DeactivatedIcon: {fileID: 1605609389858314}
+  IconMaterials:
+  - {fileID: 2100000, guid: d20566beaff431843b1fdee83618e14c, type: 2}
+  - {fileID: 2100000, guid: 09d6a831b68bd504988a96d13804e413, type: 2}
 --- !u!114 &114645267733388414
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -504,9 +618,9 @@ MonoBehaviour:
   m_Script: {fileID: -119419473, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ModuleType: snatchersMap
-  ModuleDisplayName: Snatcher's Map
-  RequiresTimerVisibility: 0
+  ModuleType: riftRoulette
+  ModuleDisplayName: Rift Roulette
+  RequiresTimerVisibility: 1
 --- !u!114 &114938528331751674
 MonoBehaviour:
   m_ObjectHideFlags: 1
