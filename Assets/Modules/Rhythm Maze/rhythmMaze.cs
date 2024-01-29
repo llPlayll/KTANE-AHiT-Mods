@@ -574,7 +574,7 @@ public class rhythmMaze : MonoBehaviour
             if (location % 10 == 6)
             {
                 location = ((int)(location / 10) + 1) * 10 + 1;
-                if (location == 70)
+                if (location == 71)
                 {
                     location = 11;
                 }
