@@ -23,8 +23,11 @@ public class riftRoulette : MonoBehaviour
     int startMin;
 
     List<int> basePool = new List<int>() { };
+    List<int> finalPool = new List<int>() { };
+    int goalItem;
+    int goalItemIdx;
 
-    int rolled = 0;
+    int rolled;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -75,6 +78,14 @@ public class riftRoulette : MonoBehaviour
         Slots[0].GetComponent<MeshRenderer>().material.color = Color.white;
 
         GenBasePool();
+        GenFinalPool();
+
+        foreach (char letter in Bomb.GetSerialNumberLetters())
+        {
+            goalItemIdx += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(letter) + 1;
+        }
+        goalItem = basePool[(goalItemIdx - 1) % basePool.Count];
+        Log($"The Goal Item is at position {goalItemIdx} and it is {itemNames[goalItem]}.");
     }
 
     void GenBasePool()
@@ -219,7 +230,39 @@ public class riftRoulette : MonoBehaviour
     
     void GenFinalPool()
     {
+        int offset = 0;
+        foreach (int digit in Bomb.GetSerialNumberNumbers().ToList())
+        {
+            offset += digit;
+        }
+        offset %= 10;
+        Log($"The Offset for determining the Final Pool is {offset + 1}.");
 
+        List<int> tempBasePool = basePool.ConvertAll(item => item);
+        while (tempBasePool.Count > 0)
+        {
+            tempBasePool = ShiftList(tempBasePool, offset);
+            finalPool.Add(tempBasePool[0]);
+            tempBasePool.RemoveAt(0);
+        }
+
+        string finalPoolLog = "";
+        foreach (int item in finalPool)
+        {
+            finalPoolLog += $"{itemNames[item]}, ";
+        }
+        finalPoolLog = finalPoolLog.Substring(0, finalPoolLog.Length - 2);
+        Log($"The Final Pool is: {finalPoolLog}");
+    }
+
+    List<int> ShiftList(List<int> l, int shift)
+    {
+        List<int> newL = new List<int>();
+        for (int i = 0; i < l.Count; i++)
+        {
+            newL.Add(l[(shift + i) % l.Count]);
+        }
+        return newL;
     }
 
     void Log(string arg)
