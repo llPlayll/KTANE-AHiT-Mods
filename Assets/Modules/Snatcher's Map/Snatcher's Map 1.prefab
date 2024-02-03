@@ -605,7 +605,6 @@ GameObject:
   - component: {fileID: 114710734928427116}
   - component: {fileID: 114368205681960322}
   - component: {fileID: 114465982669432004}
-  - component: {fileID: 114467521444187878}
   - component: {fileID: 114846375046390176}
   m_Layer: 0
   m_Name: Snatcher's Map 1
@@ -1205,7 +1204,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1718296079891352
 GameObject:
   m_ObjectHideFlags: 1
@@ -3713,7 +3712,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 782e2e5b4f1696e428a0ec685ada71b9, type: 3}
+  - {fileID: 2100000, guid: f8f8509d1922ec74aa99fa22e1c7a322, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4427,7 +4426,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: e9bf859081531344b9b6dba0097e070a, type: 2}
+  - {fileID: 2100000, guid: 1379ef7c8be692f44bff0474267a385f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6218,20 +6217,18 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1313244298890492}
-  m_Text: 'FOOOOOL!
+  m_Text: 'FOOOOOO-
 
-    OH, IT''S
+    OH WAIT...
 
-    YOU
-
-'
+    IT''S YOU'
   m_OffsetZ: 0
   m_CharacterSize: 1
   m_LineSpacing: 1
   m_Anchor: 4
   m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 225
+  m_FontSize: 250
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: 782e2e5b4f1696e428a0ec685ada71b9, type: 3}
@@ -7675,18 +7672,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HighlightScale: {x: 1, y: 1, z: 1}
   OutlineAmount: 0
---- !u!114 &114467521444187878
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1345833422984662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _colorblindMode: 0
 --- !u!114 &114467928556549662
 MonoBehaviour:
   m_ObjectHideFlags: 1

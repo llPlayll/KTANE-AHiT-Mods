@@ -204,10 +204,13 @@
                 </ul>
                 <p>The module will alternate between going X and X+A forward, even though it may begin by using either.</p>
                 <p>You have 4 rolls to figure out the offsets X and A. Once every slot has been rolled, tapping any slot will enter submission mode.</p>
-                <p>In submission mode, only one slote is displayed. <b>slot will be automatically rolled when you enter submission mode</b>.
-                    To roll the slot, tap it when the last digit of the timer is even, and to submit the current item tap it when the last digit of the timer is odd.
+                <p>In submission mode, only one slot is displayed. <b>The slot will be automatically rolled one time when you enter submission mode.</b>
+                    To roll the slot, tap it when the last digit of the timer is even, and to submit the current item on the slot, tap it when the last digit of the timer is odd.
                 </p>
                 <p>Roll the slot through the Final Pool until you get the goal item, and submit it to solve the module.</p>
+
+                <p>We've also been informed that the roulette tries to never generate an impossible looping solution with X and A values. The module will try a million times to generate X and A values that make the module solvable. If all fails, the module will enter failsafe mode and solve once you press any of the slots.</p>
+                <p>Example: Pool of 3 items: 123, X = 1, A = 1, Starting Item = 1, Goal Item = 3, Second roll will be gotten by going X forward: The rolled items are 121212..., item 3 is never rolled, the roulette doesn't have a solution.</p>
             </div>
             <div class="page-footer relative-footer">4</div>
         </div>

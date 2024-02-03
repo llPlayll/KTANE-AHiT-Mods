@@ -16,8 +16,9 @@ public class riftRoulette : MonoBehaviour
     [SerializeField] private List<Material> IconMaterials;
     [SerializeField] private GameObject SlotsParent;
     [SerializeField] private List<GameObject> Slots;
+    [SerializeField] private List<Material> ItemMaterials;
 
-    List<string> itemNames = new List<string>() {"Cardboard", "Anarchy", "Pizza Time", "Virtual Kid", "Citrus", "Old Film", "Wireframe", "Obnoxious", "Blue Comet", "The Forest Critter", "City Girl", "Punk Set", "Milky Way", "Shadow Puppet", "Transcendent", "Too Hot to Handle", "Ice Hat", "Sprint Hat", "Brewing Hat", "Dweller Mask", "Time Stop Hat", "Kid's Hat" };
+    List<string> itemNames = new List<string>() { "Cardboard", "Anarchy", "Pizza Time", "Virtual Kid", "Citrus", "Old Film", "Wireframe", "Obnoxious", "Blue Comet", "The Forest Critter", "City Girl", "Punk Set", "Milky Way", "Shadow Puppet", "Transcendent", "Too Hot to Handle", "Ice Hat", "Sprint Hat", "Brewing Hat", "Dweller Mask", "Time Stop Hat", "Kid's Hat" };
     List<string> cosmicMods = new List<string>() { "Astrological", "spwizAstrology", "cruelStars", "earth", "exoplanets", "jupiter", "mars", "matchRefereeing", "mercury", "neptune", "nomai", "planets", "planetX", "pluto", "saturn", "xelSpace", "stars", "syzygyModule", "uranus", "venus"};
     int startDay;
     int startMin;
@@ -27,7 +28,10 @@ public class riftRoulette : MonoBehaviour
     int goalItem;
     int goalItemIdx;
 
-    int rolled;
+    int X, A;
+    int rolledCount;
+    int startingItem, lastRolled, lastIndex;
+    bool XandA;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -45,7 +49,37 @@ public class riftRoulette : MonoBehaviour
 
     void InitSlotRoll(GameObject slot)
     {
+        int slotIndex = Slots.IndexOf(slot);
+        if (slotIndex == rolledCount)
+        {
+            rolledCount++;
+            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, slot.transform);
+            slot.GetComponent<KMSelectable>().AddInteractionPunch();
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                Slots[i].GetComponent<MeshRenderer>().material.color = (i == rolledCount || rolledCount == 4 ? Color.white : Color.gray);
+                Slots[i].transform.Find("Item Icon").gameObject.GetComponent<MeshRenderer>().material = null;
+            }
+            slot.transform.Find("Item Icon").gameObject.GetComponent<MeshRenderer>().material = ItemMaterials[lastRolled];
+            Log($"Roll number {Slots.IndexOf(slot) + 1}: {itemNames[lastRolled]}.");
+            RollThroughPool();
+        }
+    }
 
+    void RollThroughPool()
+    {
+        lastIndex += X;
+        if (XandA)
+        {
+            lastIndex += A;
+            XandA = false;
+        }
+        else
+        {
+            XandA = true;
+        }
+        lastIndex %= finalPool.Count;
+        lastRolled = finalPool[lastIndex];
     }
 
     void Start()
@@ -86,6 +120,14 @@ public class riftRoulette : MonoBehaviour
         }
         goalItem = basePool[(goalItemIdx - 1) % basePool.Count];
         Log($"The Goal Item is at position {goalItemIdx} and it is {itemNames[goalItem]}.");
+
+        startingItem = finalPool[Rnd.Range(0, finalPool.Count - 1)];
+        lastRolled = startingItem;
+        lastIndex = finalPool.IndexOf(lastRolled);
+        Log($"The Starting Item (1st Roll) is {itemNames[startingItem]}");
+
+        XandA = Rnd.Range(0, 1) == 1;
+        GenXandA();
     }
 
     void GenBasePool()
@@ -253,6 +295,44 @@ public class riftRoulette : MonoBehaviour
         }
         finalPoolLog = finalPoolLog.Substring(0, finalPoolLog.Length - 2);
         Log($"The Final Pool is: {finalPoolLog}");
+    }
+
+    void GenXandA()
+    {
+        for (int i = 0; i < 1000000; i++)
+        {
+            X = Rnd.Range(1, finalPool.Count);
+            A = Rnd.Range(1, finalPool.Count);
+            bool CheckXandA = XandA;
+            int CheckPos = finalPool.IndexOf(startingItem);
+            List<int> CheckRolled = new List<int>() {  };
+            for (int j = 0; j < 50; j++)
+            {
+                CheckPos += X;
+                if (CheckXandA)
+                {
+                    CheckPos += A;
+                    CheckXandA = false;
+                }
+                else
+                {
+                    CheckXandA = true;
+                }
+                CheckPos %= finalPool.Count;
+                CheckRolled.Add(CheckPos);
+            }
+            bool val = true;
+            for (int j = 0; j < CheckRolled.Count; j++)
+            {
+                if (!CheckRolled.Contains(j))
+                {
+                    val = false;
+                    break;
+                }
+            }
+            if (val) { break; }
+        }
+        Log($"Generated variables are: X = {X}, A = {A}. The second roll will be gotten by going forward {(XandA ? "X + A" : "X")} times.");
     }
 
     List<int> ShiftList(List<int> l, int shift)

@@ -156,40 +156,7 @@ Prefab:
       propertyPath: m_Name
       value: Snatcher's Map
       objectReference: {fileID: 0}
-    - target: {fileID: 1345833422984662, guid: 8c50ba30cb70de34da935758495af8e8, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1716963392605016, guid: 8c50ba30cb70de34da935758495af8e8, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 23311396337935176, guid: 8c50ba30cb70de34da935758495af8e8,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: f8f8509d1922ec74aa99fa22e1c7a322, type: 2}
-    - target: {fileID: 23601318615838874, guid: 8c50ba30cb70de34da935758495af8e8,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 1379ef7c8be692f44bff0474267a385f, type: 2}
-    - target: {fileID: 102384755938654402, guid: 8c50ba30cb70de34da935758495af8e8,
-        type: 2}
-      propertyPath: m_Text
-      value: 'FOOOOOO-
-
-        OH WAIT...
-
-        IT''S YOU'
-      objectReference: {fileID: 0}
-    - target: {fileID: 102384755938654402, guid: 8c50ba30cb70de34da935758495af8e8,
-        type: 2}
-      propertyPath: m_FontSize
-      value: 250
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114467521444187878, guid: 8c50ba30cb70de34da935758495af8e8, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8c50ba30cb70de34da935758495af8e8, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &718125306
@@ -474,6 +441,10 @@ Prefab:
     - target: {fileID: 4083352987931918, guid: f04c1a659195f0347b83ac970bba6b81, type: 2}
       propertyPath: m_RootOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1137567616980298, guid: f04c1a659195f0347b83ac970bba6b81, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f04c1a659195f0347b83ac970bba6b81, type: 2}
