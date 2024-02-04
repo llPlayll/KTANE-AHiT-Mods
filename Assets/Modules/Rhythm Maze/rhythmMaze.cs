@@ -115,7 +115,6 @@ public class rhythmMaze : MonoBehaviour
         foreach (KMSelectable arrowButton in ArrowButtons) {
             arrowButton.OnInteract += delegate () { ArrowPressed(arrowButton); return false; };
         }
-        MazeParent.SetActive(false);
     }
 
     void DisableCollapse()
@@ -350,6 +349,7 @@ public class rhythmMaze : MonoBehaviour
 
     void SetupButtons()
     {
+        MazeParent.SetActive(false);
         StartButton.gameObject.SetActive(true);
         if (deathWish)
         {
