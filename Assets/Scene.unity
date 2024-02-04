@@ -156,10 +156,6 @@ Prefab:
       propertyPath: m_Name
       value: Snatcher's Map
       objectReference: {fileID: 0}
-    - target: {fileID: 1345833422984662, guid: 8c50ba30cb70de34da935758495af8e8, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8c50ba30cb70de34da935758495af8e8, type: 2}
   m_IsPrefabParent: 0
@@ -201,10 +197,6 @@ Prefab:
     - target: {fileID: 4426506819988380, guid: 0d1fa57faa64e9a4e9a76c0c83ef7b54, type: 2}
       propertyPath: m_RootOrder
       value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1450206322286780, guid: 0d1fa57faa64e9a4e9a76c0c83ef7b54, type: 2}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0d1fa57faa64e9a4e9a76c0c83ef7b54, type: 2}

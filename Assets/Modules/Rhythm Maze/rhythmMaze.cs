@@ -90,6 +90,7 @@ public class rhythmMaze : MonoBehaviour
     bool TPStarted;
     bool DWForced;
     int TPOffset = 0;
+    bool TPAutoSolved;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -135,7 +136,7 @@ public class rhythmMaze : MonoBehaviour
         if (deathWish)
         {
             currentSide = Rnd.Range(0, 2);
-            TPOffset = Rnd.Range(0, 1);
+            TPOffset = Rnd.Range(0, 2);
             ModuleRenderer.material = SidesMaterials[2];
             AudioSrc.clip = Songs[1];
             waitTime = 2f / 3f;
@@ -650,7 +651,7 @@ public class rhythmMaze : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use <!{0} start> to start the module. <!{0} peace> To disable Death Wish mode (if it wasn't forced). <!{0} collapse> To force Death Wish mode. (Keep in mind that this doesn't award any additional points yet and you can't disable it after doing this command) <!{0} mute> To press the status light. <!{0} move 1ur2dl> to move up then right on side 1, and then move down then left on side 2. The number in the top-left corner of the module is the side number.";
+    private readonly string TwitchHelpMessage = @"Use <!{0} start> to start the module. <!{0} peace> To disable Death Wish mode (if it wasn't forced). <!{0} collapse> To force Death Wish mode. (Keep in mind that you can't disable it after doing this command) <!{0} mute> To press the status light. <!{0} move 1ur2dl> to move up then right on side 1, and then move down then left on side 2. The number in the top-left corner of the module is the side number.";
     private bool TwitchPlaysActive = false;
 #pragma warning restore 414
 
@@ -761,6 +762,11 @@ public class rhythmMaze : MonoBehaviour
                             default:
                                 break;
                         }
+                        if (ModuleSolved & deathWish & !TPAutoSolved)
+                        {
+                            yield return "awardpoints 16";
+                            break;
+                        }
                     }
                 }
                 break;
@@ -772,6 +778,7 @@ public class rhythmMaze : MonoBehaviour
 
     IEnumerator TwitchHandleForcedSolve()
     {
+        TPAutoSolved = true;
         yield return null;
     }
 

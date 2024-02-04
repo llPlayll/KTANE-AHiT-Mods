@@ -16,10 +16,13 @@ MonoBehaviour:
   author: _Play_
   description: 'A pack of three modules inspired by the game A Hat in Time!
 
+    Snatcher''s Map, Rhythm Maze and Rift Roullete.
+
 
     Developed by _Play_.
 
-    A Hat in Time made by Gears for Breakfast. Give it a try! <3'
+    A Hat in Time made by Gears for Breakfast (This mod uses some assets from that
+    game). Give it a try! <3'
   version: 1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b727e78c10c1c394da1f3fdccac35185, type: 3}
