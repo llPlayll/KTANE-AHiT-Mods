@@ -17,6 +17,8 @@ public class riftRoulette : MonoBehaviour
     [SerializeField] private GameObject SlotsParent;
     [SerializeField] private List<GameObject> Slots;
     [SerializeField] private List<Material> ItemMaterials;
+    [SerializeField] private GameObject FinalSlot;
+    [SerializeField] private AudioClip StartupJingle;
 
     List<string> itemNames = new List<string>() { "Cardboard", "Anarchy", "Pizza Time", "Virtual Kid", "Citrus", "Old Film", "Wireframe", "Obnoxious", "Blue Comet", "The Forest Critter", "City Girl", "Punk Set", "Milky Way", "Shadow Puppet", "Transcendent", "Too Hot to Handle", "Ice Hat", "Sprint Hat", "Brewing Hat", "Dweller Mask", "Time Stop Hat", "Kid's Hat" };
     List<string> cosmicMods = new List<string>() { "Astrological", "spwizAstrology", "cruelStars", "earth", "exoplanets", "jupiter", "mars", "matchRefereeing", "mercury", "neptune", "nomai", "planets", "planetX", "pluto", "saturn", "xelSpace", "stars", "syzygyModule", "uranus", "venus"};
@@ -31,7 +33,7 @@ public class riftRoulette : MonoBehaviour
     int X, A;
     int rolledCount;
     int startingItem, lastRolled, lastIndex;
-    bool XandA;
+    bool XandA, success;
 
     static int ModuleIdCounter = 1;
     int ModuleId;
@@ -43,12 +45,17 @@ public class riftRoulette : MonoBehaviour
         foreach (GameObject slot in Slots) {
             slot.GetComponent<KMSelectable>().OnInteract += delegate () { InitSlotRoll(slot); return false; };
             }
-
-        //button.OnInteract += delegate () { buttonPress(); return false; };
+        FinalSlot.GetComponent<KMSelectable>().OnInteract += delegate () { FinalSlotRoll(); return false; };
     }
 
     void InitSlotRoll(GameObject slot)
     {
+        if (!success)
+        {
+            ModuleSolved = true;
+            GetComponent<KMBombModule>().HandlePass();
+            SlotsParent.SetActive(false);
+        }
         int slotIndex = Slots.IndexOf(slot);
         if (slotIndex == rolledCount)
         {
@@ -63,6 +70,44 @@ public class riftRoulette : MonoBehaviour
             slot.transform.Find("Item Icon").gameObject.GetComponent<MeshRenderer>().material = ItemMaterials[lastRolled];
             Log($"Roll number {Slots.IndexOf(slot) + 1}: {itemNames[lastRolled]}.");
             RollThroughPool();
+        }
+        else if (rolledCount == 4)
+        {
+            SlotsParent.SetActive(false);
+            FinalSlot.SetActive(true);
+            Log($"Entered Submission Mode! Current Roll: {itemNames[lastRolled]}.");
+        }
+    }
+
+    void FinalSlotRoll()
+    {
+        if (ModuleSolved)
+        {
+            return;
+        }
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, FinalSlot.transform);
+
+        if ((int)Bomb.GetTime() % 2 == 0)
+        {
+            FinalSlot.GetComponent<KMSelectable>().AddInteractionPunch();
+            Log($"Submitted {itemNames[lastRolled]}. That was {(lastRolled == goalItem ? "correct. Module Solved!" : "incorrect. Strike!")}");
+            if (lastRolled == goalItem)
+            {
+                ModuleSolved = true;
+                GetComponent<KMBombModule>().HandlePass();    
+                
+            }
+            else
+            {
+                GetComponent<KMBombModule>().HandleStrike();
+            }
+            FinalSlot.transform.Find("Item Icon").gameObject.GetComponent<MeshRenderer>().material = ItemMaterials[lastRolled];
+        }
+        else
+        {
+            RollThroughPool();
+            FinalSlot.transform.Find("Item Icon").gameObject.GetComponent<MeshRenderer>().material = null;
+            Log($"Rolling! Current Roll: {itemNames[lastRolled]}.");
         }
     }
 
@@ -86,6 +131,7 @@ public class riftRoulette : MonoBehaviour
     {
         startDay = Convert.ToInt32(DateTime.Now.ToString("dd"));
         startMin = (int)Bomb.GetTime() / 60;
+        FinalSlot.SetActive(false);
         if (Bomb.GetModuleIDs().Contains("rhythmMaze"))
         {
             Log($"The module detected a Rhythm Maze module on the bomb. The module will not activate untill all of the Rhythm Mazes are solved.");
@@ -103,6 +149,7 @@ public class riftRoulette : MonoBehaviour
     void Activate()
     {
         Log("Module Activated!");
+        Audio.PlaySoundAtTransform(StartupJingle.name, transform);
         DeactivatedIcon.SetActive(false);
         SlotsParent.SetActive(true);
         foreach (GameObject slot in Slots)
@@ -128,6 +175,14 @@ public class riftRoulette : MonoBehaviour
 
         XandA = Rnd.Range(0, 1) == 1;
         GenXandA();
+    }
+
+    void FailSafe()
+    {
+        foreach (GameObject slot in Slots)
+        {
+            slot.GetComponent<MeshRenderer>().material.color = Rnd.ColorHSV();
+        }
     }
 
     void GenBasePool()
@@ -306,6 +361,7 @@ public class riftRoulette : MonoBehaviour
             bool CheckXandA = XandA;
             int CheckPos = finalPool.IndexOf(startingItem);
             List<int> CheckRolled = new List<int>() {  };
+
             for (int j = 0; j < 50; j++)
             {
                 CheckPos += X;
@@ -322,7 +378,7 @@ public class riftRoulette : MonoBehaviour
                 CheckRolled.Add(CheckPos);
             }
             bool val = true;
-            for (int j = 0; j < CheckRolled.Count; j++)
+            for (int j = 0; j < finalPool.Count; j++)
             {
                 if (!CheckRolled.Contains(j))
                 {
@@ -330,9 +386,21 @@ public class riftRoulette : MonoBehaviour
                     break;
                 }
             }
-            if (val) { break; }
+            if (val)
+            {
+                success = true;
+                break;
+            }
         }
-        Log($"Generated variables are: X = {X}, A = {A}. The second roll will be gotten by going forward {(XandA ? "X + A" : "X")} times.");
+        if (success)
+        {
+            Log($"Generated variables are: X = {X}, A = {A}. The second roll will be gotten by going forward {(XandA ? "X + A" : "X")} times.");
+        }
+        else
+        {
+            Log("The module has failed to generate X and A values. Any button press will solve the module.");
+            FailSafe();
+        }
     }
 
     List<int> ShiftList(List<int> l, int shift)
