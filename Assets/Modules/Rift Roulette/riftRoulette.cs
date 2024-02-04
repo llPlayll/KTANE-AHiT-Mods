@@ -35,6 +35,8 @@ public class riftRoulette : MonoBehaviour
     int startingItem, lastRolled, lastIndex;
     bool XandA, success;
 
+    bool TPSubmissionMode;
+
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved;
@@ -56,12 +58,13 @@ public class riftRoulette : MonoBehaviour
             GetComponent<KMBombModule>().HandlePass();
             SlotsParent.SetActive(false);
         }
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, slot.transform);
+        slot.GetComponent<KMSelectable>().AddInteractionPunch();
+
         int slotIndex = Slots.IndexOf(slot);
         if (slotIndex == rolledCount)
         {
             rolledCount++;
-            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, slot.transform);
-            slot.GetComponent<KMSelectable>().AddInteractionPunch();
             for (int i = 0; i < Slots.Count; i++)
             {
                 Slots[i].GetComponent<MeshRenderer>().material.color = (i == rolledCount || rolledCount == 4 ? Color.white : Color.gray);
@@ -75,6 +78,7 @@ public class riftRoulette : MonoBehaviour
         {
             SlotsParent.SetActive(false);
             FinalSlot.SetActive(true);
+            TPSubmissionMode = true;
             Log($"Entered Submission Mode! Current Roll: {itemNames[lastRolled]}.");
         }
     }
@@ -428,16 +432,110 @@ public class riftRoulette : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use !{0} to do something.";
+    private readonly string TwitchHelpMessage = @"Use <!{0} roll> in initial phase to roll the next slot / enter submission mode. In submission mode, use <!{0} next #> to roll the slot # times (or 1 if # not specified) and use <!{0} submit> to submit the current item.";
 #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string Command)
     {
-        yield return null;
+        string[] Args = Command.ToLowerInvariant().Split(new[] { ' ' }, 2);
+        switch (Args[0])
+        {
+            case "roll":
+                if (TPSubmissionMode)
+                {
+                    yield return "sendtochatmessage Module already in submission mode!";
+                }
+                else
+                {
+                    yield return null;
+                    Slots[rolledCount % 4].GetComponent<KMSelectable>().OnInteract();
+                }
+                break;
+            case "next":
+                if (!TPSubmissionMode)
+                {
+                    yield return "sendtochatmessage Module not in submission mode!";
+                }
+                else
+                {
+                    int times = 1;
+                    if (Args.Length == 2)
+                    {
+                        int tryParse;
+                        if (int.TryParse(Args[1], out tryParse))
+                        {
+                            times = tryParse;
+                        }
+                        else
+                        {
+                            yield return "sendtochatmessage Invalid number of times!";
+                        }
+                    }
+                    yield return null;
+                    for (int i = 0; i < times; i++)
+                    {
+                        int currTime = (int)Bomb.GetTime();
+                        while (currTime % 2 == 0)
+                        {
+                            yield return null;
+                            currTime = (int)Bomb.GetTime();
+                        }
+                        FinalSlot.GetComponent<KMSelectable>().OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
+                break;
+            case "submit":
+                if (!TPSubmissionMode)
+                {
+                    yield return "sendtochatmessage Module not in submission mode!";
+                }
+                else
+                {
+                    yield return null;
+                    int currTime = (int)Bomb.GetTime();
+                    while (currTime % 2 == 1)
+                    {
+                        yield return null;
+                        currTime = (int)Bomb.GetTime();
+                    }
+                    FinalSlot.GetComponent<KMSelectable>().OnInteract();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     IEnumerator TwitchHandleForcedSolve()
     {
         yield return null;
+        if (!TPSubmissionMode)
+        {
+            for (int i = rolledCount; i < 4; i++)
+            {
+                Slots[i].GetComponent<KMSelectable>().OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            Slots[0].GetComponent<KMSelectable>().OnInteract();
+        }
+        while (lastRolled != goalItem)
+        {
+            int currTime = (int)Bomb.GetTime();
+            while (currTime % 2 == 0)
+            {
+                yield return null;
+                currTime = (int)Bomb.GetTime();
+            }
+            FinalSlot.GetComponent<KMSelectable>().OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        int currFinalTime = (int)Bomb.GetTime();
+        while (currFinalTime % 2 == 1)
+        {
+            yield return null;
+            currFinalTime = (int)Bomb.GetTime();
+        }
+        FinalSlot.GetComponent<KMSelectable>().OnInteract();
     }
 }
