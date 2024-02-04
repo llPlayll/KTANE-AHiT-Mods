@@ -165,7 +165,6 @@ public class rhythmMaze : MonoBehaviour
             marking.SetActive(false);
         }
         MazeParent.SetActive(true);
-        GetComponentInParent<KMSelectable>().UpdateChildrenProperly();
 
         GenerateMarkings();
         GeneratePonsAndGoal();

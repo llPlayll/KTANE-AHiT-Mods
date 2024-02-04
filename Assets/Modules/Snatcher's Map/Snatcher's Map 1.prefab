@@ -1204,7 +1204,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1718296079891352
 GameObject:
   m_ObjectHideFlags: 1
@@ -6408,7 +6408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - GUI/Text Shader
+  - GUI/KT 3D Text
 --- !u!114 &114095805794727302
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6946,7 +6946,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - KT/Mobile/Diffuse
 --- !u!114 &114262672591690726
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -133,7 +133,6 @@ public class snatchersMap : MonoBehaviour
         InfoText.gameObject.SetActive(false);
         Map.SetActive(true);
         TPSubmissionMode = true;
-        GetComponent<KMSelectable>().UpdateChildrenProperly();
     }
 
     void StampPressed(KMSelectable stamp)
