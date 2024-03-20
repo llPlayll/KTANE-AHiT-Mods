@@ -160,7 +160,7 @@ public class snatchersMap : MonoBehaviour
     void Start()
     {
         if (Bomb.GetModuleIDs().Contains("rhythmMaze"))
-        { 
+        {
             Audio.PlaySoundAtTransform(FoolClip.name, transform);
         }
         StartModule();
