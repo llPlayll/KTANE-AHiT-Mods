@@ -33,7 +33,8 @@ public class riftRoulette : MonoBehaviour
     int X, A;
     int rolledCount;
     int startingItem, lastRolled, lastIndex;
-    bool XandA, success;
+    bool startXandA, XandA, success;
+    bool activated;
 
     bool TPSubmissionMode;
 
@@ -152,33 +153,42 @@ public class riftRoulette : MonoBehaviour
 
     void Activate()
     {
-        Log("Module Activated!");
-        Audio.PlaySoundAtTransform(StartupJingle.name, transform);
         DeactivatedIcon.SetActive(false);
         SlotsParent.SetActive(true);
+        FinalSlot.SetActive(false);
         foreach (GameObject slot in Slots)
         {
             slot.GetComponent<MeshRenderer>().material.color = Color.gray;
+            slot.transform.Find("Item Icon").gameObject.GetComponent<MeshRenderer>().material = null;
         }
         Slots[0].GetComponent<MeshRenderer>().material.color = Color.white;
 
-        GenBasePool();
-        GenFinalPool();
-
-        foreach (char letter in Bomb.GetSerialNumberLetters())
+        if (!activated)
         {
-            goalItemIdx += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(letter) + 1;
-        }
-        goalItem = basePool[(goalItemIdx - 1) % basePool.Count];
-        Log($"The Goal Item is at position {goalItemIdx} and it is {itemNames[goalItem]}.");
+            Log("Module Activated!");
+            Audio.PlaySoundAtTransform(StartupJingle.name, transform);
 
-        startingItem = finalPool[Rnd.Range(0, finalPool.Count - 1)];
+            GenBasePool();
+            GenFinalPool();
+
+            foreach (char letter in Bomb.GetSerialNumberLetters())
+            {
+                goalItemIdx += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(letter) + 1;
+            }
+            goalItem = basePool[(goalItemIdx - 1) % basePool.Count];
+            Log($"The Goal Item is at position {goalItemIdx} and it is {itemNames[goalItem]}.");
+
+            startingItem = finalPool[Rnd.Range(0, finalPool.Count - 1)];
+            Log($"The Starting Item (1st Roll) is {itemNames[startingItem]}");
+
+            startXandA = Rnd.Range(0, 1) == 1;
+            GenXandA();
+        }
         lastRolled = startingItem;
         lastIndex = finalPool.IndexOf(lastRolled);
-        Log($"The Starting Item (1st Roll) is {itemNames[startingItem]}");
+        XandA = startXandA;
 
-        XandA = Rnd.Range(0, 1) == 1;
-        GenXandA();
+        activated = true;
     }
 
     void FailSafe()
@@ -362,7 +372,7 @@ public class riftRoulette : MonoBehaviour
         {
             X = Rnd.Range(1, finalPool.Count);
             A = Rnd.Range(1, finalPool.Count);
-            bool CheckXandA = XandA;
+            bool CheckXandA = startXandA;
             int CheckPos = finalPool.IndexOf(startingItem);
             List<int> CheckRolled = new List<int>() {  };
 
@@ -398,7 +408,7 @@ public class riftRoulette : MonoBehaviour
         }
         if (success)
         {
-            Log($"Generated variables are: X = {X}, A = {A}. The second roll will be gotten by going forward {(XandA ? "X + A" : "X")} times.");
+            Log($"Generated variables are: X = {X}, A = {A}. The second roll will be gotten by going forward {(startXandA ? "X + A" : "X")} times.");
         }
         else
         {
@@ -432,7 +442,7 @@ public class riftRoulette : MonoBehaviour
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use <!{0} roll> in initial phase to roll the next slot / enter submission mode. In submission mode, use <!{0} next #> to roll the slot # times (or 1 if # not specified) and use <!{0} submit> to submit the current item.";
+    private readonly string TwitchHelpMessage = @"Use <!{0} roll> in initial phase to roll the next slot / enter submission mode. In submission mode, use <!{0} next #> to roll the slot # times (or 1 if # not specified) and use <!{0} submit> to submit the current item. <!{0} reset> to reset the module to the rolling phase (previous rolls in the submission phase will be dismissed upon reaching it again).";
 #pragma warning restore 414
 
     IEnumerator ProcessTwitchCommand(string Command)
@@ -500,6 +510,19 @@ public class riftRoulette : MonoBehaviour
                         currTime = (int)Bomb.GetTime();
                     }
                     FinalSlot.GetComponent<KMSelectable>().OnInteract();
+                }
+                break;
+            case "reset":
+                if (!activated)
+                {
+                    yield return "sendtochatmessage Module not activated!";
+                }
+                else
+                {
+                    yield return null;
+                    rolledCount = 0;
+                    TPSubmissionMode = false;
+                    Activate();
                 }
                 break;
             default:
