@@ -266,14 +266,15 @@ public class snatchersMap : MonoBehaviour
                 yield return null;
                 for (int i = 0; i < infoWordCount; i++)
                 {
+                    int TPstartTime = (int)Bomb.GetTime();
                     int TPtime = (int)Bomb.GetTime();
-                    int TPgoalTime = TPtime - TPCycleSpeed - 1;
                     while (true)
                     {
                         TPtime = (int)Bomb.GetTime();
                         yield return null;
-                        if (TPtime <= TPgoalTime)
+                        if (Math.Max(TPstartTime, TPtime) - Math.Min(TPstartTime, TPtime) >= TPCycleSpeed + 1)
                         {
+                            yield return null;
                             CycleButton.OnInteractEnded();
                             break;
                         }
@@ -297,8 +298,16 @@ public class snatchersMap : MonoBehaviour
                     int tryParse;
                     if (int.TryParse(commandArgs[1], out tryParse))
                     {
-                        TPCycleSpeed = tryParse;
-                        yield return $"Setting the cycle speed to {TPCycleSpeed} ticks.";
+                        if (tryParse > -1)
+                        {
+                            TPCycleSpeed = tryParse;
+                            yield return $"Setting the cycle speed to {TPCycleSpeed} ticks.";
+                        }
+                        else
+                        {
+                            yield return "sendtochatmessage Invalid cycle speed!";
+                            yield break;
+                        }
                     }
                     else
                     {
@@ -313,15 +322,14 @@ public class snatchersMap : MonoBehaviour
                     yield return "sendtochatmessage Already in submission mode!";
                     yield break;
                 }
-                int TPtoggleTime = (int)Bomb.GetTime();
-                int TPtoggleGoalTime = TPtoggleTime - 1;
+                yield return null;
                 CycleButton.OnInteract();
                 while (true)
                 {
-                    TPtoggleTime = (int)Bomb.GetTime();
                     yield return null;
-                    if (TPtoggleTime <= TPtoggleGoalTime)
+                    if (overATick)
                     {
+                        yield return null;
                         CycleButton.OnInteractEnded();
                         break;
                     }
@@ -360,15 +368,13 @@ public class snatchersMap : MonoBehaviour
         if (!TPSubmissionMode)
         {
             yield return null;
-            int TPtoggleTime = (int)Bomb.GetTime();
-            int TPtoggleGoalTime = TPtoggleTime - 1;
             CycleButton.OnInteract();
             while (true)
             {
-                TPtoggleTime = (int)Bomb.GetTime();
                 yield return null;
-                if (TPtoggleTime <= TPtoggleGoalTime)
+                if (overATick)
                 {
+                    yield return null;
                     CycleButton.OnInteractEnded();
                     break;
                 }
