@@ -21,7 +21,7 @@ public class riftRoulette : MonoBehaviour
     [SerializeField] private AudioClip StartupJingle;
 
     List<string> itemNames = new List<string>() { "Cardboard", "Anarchy", "Pizza Time", "Virtual Kid", "Citrus", "Old Film", "Wireframe", "Obnoxious", "Blue Comet", "The Forest Critter", "City Girl", "Punk Set", "Milky Way", "Shadow Puppet", "Transcendent", "Too Hot to Handle", "Ice Hat", "Sprint Hat", "Brewing Hat", "Dweller Mask", "Time Stop Hat", "Kid's Hat" };
-    List<string> cosmicMods = new List<string>() { "Astrological", "spwizAstrology", "cruelStars", "earth", "exoplanets", "jupiter", "mars", "matchRefereeing", "mercury", "neptune", "nomai", "planets", "planetX", "pluto", "saturn", "xelSpace", "stars", "syzygyModule", "uranus", "venus"};
+    List<string> cosmicMods = new List<string>() { "Astrological", "spwizAstrology", "cruelStars", "copperNine", "earth", "exoplanets", "jupiter", "mars", "matchRefereeing", "mercury", "neptune", "nomai", "planets", "planetX", "pluto", "saturn", "xelSpace", "stars", "syzygyModule", "uranus", "venus"};
     int startDay;
     int startMin;
 
