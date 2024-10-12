@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using KModkit;
 using Rnd = UnityEngine.Random;
 
 public class snatchersMap : MonoBehaviour
@@ -73,7 +71,7 @@ public class snatchersMap : MonoBehaviour
         {"Cruisin' for a Bruisin'", new List<string>() { "Complete 40 tasks", "There's no end in sight", "Complete 40 tasks without missing one", "Complete 70 tasks"} },
         {"The Mustache Gauntlet", new List<string>() { "Defeat all the Bad Guys", "Don't get burned", "Don't use any projectile weapons"} },
         {"No More Bad Guys", new List<string>() { "Defeat Mustache Girl", "She stole a bunch of those weird Time Pieces", "Don't use any of your stupid hat abilities!", "Don't spend more than 3 minutes in the Hyper Zone"} },
-        {"Seal the Deal", new List<string>() { "Defeat your stronges foes", "Good Luck!", "You have 3 chances", "Don't use any hat abilities", "Don't let your health drop to 1HP"} },
+        {"Seal the Deal", new List<string>() { "Defeat your strongest foes", "Good Luck!", "You have 3 chances", "Don't use any hat abilities", "Don't let your health drop to 1HP"} },
         {"Snatcher Coins in Nyakuza Metro", new List<string>() { "Find a Snatcher Coin in Nyakuza Metro", "Find 2 Snatcher Coins", "Find all 3 Snatcher Coins" } },
     };
 
@@ -116,7 +114,7 @@ public class snatchersMap : MonoBehaviour
         modWordIdx++;
         modWordIdx %= infoWordCount;
         InfoText.text = randomDWInfo.Split(' ')[modWordIdx].ToUpperInvariant();
-        InfoText.fontSize = NonOverflowFontSize(InfoText.text.Length);
+        InfoText.fontSize = CoolFontSize(InfoText.text);
         if (modWordIdx == 0)
         {
             InfoText.color = Color.gray;
@@ -210,24 +208,30 @@ public class snatchersMap : MonoBehaviour
         Debug.Log($"[Snatcher's Map #{ModuleId}] {arg}");
     }
 
-    int NonOverflowFontSize(int charNum)
+    int CoolFontSize(string str)
     {
-        if (charNum < 5)
+        Dictionary<char, int> charWidths = new Dictionary<char, int>
         {
-            return 450;
-        }
-        else if (charNum == 5)
+            {'A', 17}, {'B', 15}, {'C', 12}, {'D', 9}, {'E', 5}, {'F', 17}, {'G', 12},
+            {'H', 9}, {'I', 20}, {'J', 20}, {'K', 15}, {'L', 15}, {'M', 12}, {'N', 20},
+            {'O', 10}, {'P', 10}, {'Q', 16}, {'R', 10}, {'S', 16}, {'T', 11}, {'U', 10},
+            {'V', 16}, {'W', 10}, {'X', 21}, {'Y', 18}, {'Z', 20}, {'1', 11}, {'2', 13},
+            {'3', 10}, {'4', 12}, {'5', 11}, {'6', 15}, {'7', 14}, {'8', 10}, {'9', 15},
+            {'0', 14}, {'\'', 4}, {'!', 20}, {':', 10}, {',', 5}, {'-', 8}, {'(', 7},
+            {')', 7}, {'.', 5},
+        };
+        Dictionary<int, int> fontFit = new Dictionary<int, int>
         {
-            return 350;
-        }
-        else if (charNum < 8)
+            {500, 65}, {450, 75}, {400, 85}, {350, 100}, {300, 120}, {250, 140},
+            {200, 180}, {150, 240}, {100, 360}
+        };
+        int width = str.Select(x => charWidths[x]).ToArray().Sum();
+        for (int fs = 500; fs > 100; fs -= 50)
         {
-            return 250;
+            if (width < fontFit[fs]) return fs;
         }
-        else
-        {
-            return 150;
-        }
+        return 100;
+
     }
 
 #pragma warning disable 414
