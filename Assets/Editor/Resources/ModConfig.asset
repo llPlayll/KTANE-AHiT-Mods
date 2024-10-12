@@ -23,6 +23,6 @@ MonoBehaviour:
 
     A Hat in Time made by Gears for Breakfast (This mod uses some assets from that
     game). Give it a try! <3'
-  version: 1.11
+  version: 1.12
   outputFolder: build
   previewImage: {fileID: 2800000, guid: b727e78c10c1c394da1f3fdccac35185, type: 3}
