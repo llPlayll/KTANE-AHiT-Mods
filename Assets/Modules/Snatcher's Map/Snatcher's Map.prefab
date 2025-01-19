@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 114465982669432004}
   - component: {fileID: 114846375046390176}
   m_Layer: 0
-  m_Name: Snatcher's Map 1
+  m_Name: Snatcher's Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

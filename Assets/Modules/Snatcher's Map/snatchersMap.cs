@@ -114,7 +114,7 @@ public class snatchersMap : MonoBehaviour
         modWordIdx++;
         modWordIdx %= infoWordCount;
         InfoText.text = randomDWInfo.Split(' ')[modWordIdx].ToUpperInvariant();
-        InfoText.fontSize = CoolFontSize(InfoText.text);
+        SetFontSize();
         if (modWordIdx == 0)
         {
             InfoText.color = Color.gray;
@@ -208,30 +208,27 @@ public class snatchersMap : MonoBehaviour
         Debug.Log($"[Snatcher's Map #{ModuleId}] {arg}");
     }
 
-    int CoolFontSize(string str)
+    void SetFontSize()
     {
-        Dictionary<char, int> charWidths = new Dictionary<char, int>
+        InfoText.fontSize = 500;
+        float width = 0;
+        do
         {
-            {'A', 17}, {'B', 15}, {'C', 12}, {'D', 9}, {'E', 5}, {'F', 17}, {'G', 12},
-            {'H', 9}, {'I', 20}, {'J', 20}, {'K', 15}, {'L', 15}, {'M', 12}, {'N', 20},
-            {'O', 10}, {'P', 10}, {'Q', 16}, {'R', 10}, {'S', 16}, {'T', 11}, {'U', 10},
-            {'V', 16}, {'W', 10}, {'X', 21}, {'Y', 18}, {'Z', 20}, {'1', 11}, {'2', 13},
-            {'3', 10}, {'4', 12}, {'5', 11}, {'6', 15}, {'7', 14}, {'8', 10}, {'9', 15},
-            {'0', 14}, {'\'', 4}, {'!', 20}, {':', 10}, {',', 5}, {'-', 8}, {'(', 7},
-            {')', 7}, {'.', 5},
-        };
-        Dictionary<int, int> fontFit = new Dictionary<int, int>
-        {
-            {500, 65}, {450, 75}, {400, 85}, {350, 100}, {300, 120}, {250, 140},
-            {200, 180}, {150, 240}, {100, 360}
-        };
-        int width = str.Select(x => charWidths[x]).ToArray().Sum();
-        for (int fs = 500; fs > 100; fs -= 50)
-        {
-            if (width < fontFit[fs]) return fs;
-        }
-        return 100;
-
+            width = 0;
+            foreach (char c in InfoText.text)
+            {
+                CharacterInfo info;
+                if (InfoText.font.GetCharacterInfo(c, out info, InfoText.fontSize, InfoText.fontStyle))
+                {
+                    width += info.advance;
+                }
+            }
+            width *= InfoText.characterSize * 0.1f;
+            if (width > 100)
+            {
+                InfoText.fontSize -= 5;
+            }
+        } while (width > 100);
     }
 
 #pragma warning disable 414
