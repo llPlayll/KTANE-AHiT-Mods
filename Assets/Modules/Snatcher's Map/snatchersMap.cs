@@ -79,6 +79,7 @@ public class snatchersMap : MonoBehaviour
     {
         ModuleId = ModuleIdCounter++;
 
+        GetComponent<KMBombModule>().OnActivate += delegate () { CycleText(); };
         CycleButton.OnInteract += delegate () { CycleButtonHold(); return false; };
         CycleButton.OnInteractEnded += delegate () { CycleButtonRelease(); };
         foreach (KMSelectable stamp in MapStamps)
@@ -115,6 +116,7 @@ public class snatchersMap : MonoBehaviour
         modWordIdx %= infoWordCount;
         InfoText.text = randomDWInfo.Split(' ')[modWordIdx].ToUpperInvariant();
         SetFontSize();
+
         if (modWordIdx == 0)
         {
             InfoText.color = Color.gray;
@@ -173,12 +175,11 @@ public class snatchersMap : MonoBehaviour
 
         int randomDWIdx = Rnd.Range(0, deathWishes.Keys.Count);
         randomDW = deathWishes.Keys.ElementAt<string>(randomDWIdx);
-        int randomDWInfoIdx = Rnd.Range(0, deathWishes[randomDW].Count);
 
+        int randomDWInfoIdx = Rnd.Range(0, deathWishes[randomDW].Count);
         randomDWInfo = deathWishes[randomDW].ElementAt<string>(randomDWInfoIdx);
         infoWordCount = randomDWInfo.Split(' ').ToList<string>().Count;
         modWordIdx = -1;
-        CycleText();
 
         Log($"Selected Death Wish is \"{randomDW}\".");
         Log($"Selected information about that Death Wish is \"{randomDWInfo}\".");
@@ -210,7 +211,7 @@ public class snatchersMap : MonoBehaviour
 
     void SetFontSize()
     {
-        InfoText.fontSize = 500;
+        InfoText.fontSize = 400;
         float width = 0;
         do
         {
